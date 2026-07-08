@@ -14,9 +14,9 @@ load_dotenv(dotenv_path=ENV_PATH)
 
 def get_secret(key: str, default: str = "") -> str:
     """
-    AÃ§arÄ± É™vvÉ™lcÉ™ .env-dÉ™n (lokal inkiÅŸaf Ã¼Ã§Ã¼n), tapÄ±lmasa
-    Streamlit Cloud-un Ã¶z Secrets sistemindÉ™n (st.secrets) oxuyur.
-    BelÉ™liklÉ™ eyni kod hÉ™m PyCharm-da, hÉ™m dÉ™ deploy edilmiÅŸ saytda iÅŸlÉ™yir.
+    Açarı əvvəlcə .env-dən (lokal inkişaf üçün), tapılmasa
+    Streamlit Cloud-un öz Secrets sistemindən (st.secrets) oxuyur.
+    Beləliklə eyni kod həm PyCharm-da, həm də deploy edilmiş saytda işləyir.
     """
     value = os.getenv(key, "")
     if value:
@@ -27,143 +27,143 @@ def get_secret(key: str, default: str = "") -> str:
         return default
 
 
-st.set_page_config(page_title="RoamPulse Pro", page_icon="âœˆï¸", layout="wide")
+st.set_page_config(page_title="RoamPulse Pro", page_icon="✈️", layout="wide")
 
 DEFAULT_API_KEY = get_secret("GEMINI_API_KEY")
 
 LANG_DICT = {
     "AZ": {
-        "title": "âœˆï¸ RoamPulse SÉ™yahÉ™t PortalÄ±",
-        "subtitle": "SÉ™yahÉ™t planÄ±nÄ±zÄ± yaradÄ±n, canlÄ± hava durumunu vÉ™ otellÉ™ri anÄ±nda saytda gÃ¶rÃ¼n!",
-        "settings": "âš™ï¸ TÉ™nzimlÉ™mÉ™lÉ™r",
-        "options": "ðŸ“‹ SÉ™yahÉ™t ParametrlÉ™ri",
-        "multi_city_title": "ðŸ—ºï¸ MarÅŸrut (ÅžÉ™hÉ™rlÉ™r)",
-        "leg_city": "ÅžÉ™hÉ™r",
-        "leg_days": "GÃ¼n",
-        "add_city": "âž• ÅžÉ™hÉ™r É™lavÉ™ et",
-        "remove_leg": "ðŸ—‘ï¸",
-        "total_days_label": "ðŸ§® Ãœmumi MÃ¼ddÉ™t",
-        "days_word": "gÃ¼n",
-        "city_placeholder": "MÉ™s: Paris, Tokyo, Roma",
-        "date": "ðŸ“… SÉ™yahÉ™tin BaÅŸlama Tarixi",
-        "budget": "ðŸ’° Ãœmumi BÃ¼dcÉ™ (USD)",
-        "style": "ðŸŽ­ SÉ™yahÉ™t TÉ™rzi",
-        "style_opt": ["Ekonom", "Orta", "LÃ¼ks"],
-        "interests": "ðŸŽ¯ Maraq DairÉ™si",
-        "int_museums": "Tarix vÉ™ MuzeylÉ™r",
-        "int_nature": "TÉ™biÉ™t vÉ™ Parklar",
-        "int_food": "Yerli MÉ™tbÉ™x",
-        "int_night": "GecÉ™ HÉ™yatÄ±",
-        "format": "ðŸ“‹ Hesabat NÃ¶vÃ¼",
-        "format_opt": ["DetallÄ± Plan", "QÄ±sa XÃ¼lasÉ™"],
-        "security": "ðŸ”‘ TÉ™hlÃ¼kÉ™sizlik",
-        "api_placeholder": "AÃ§arÄ±nÄ±zÄ± bura daxil edin",
-        "api_saved_msg": "âœ… AÃ§ar .env-dÉ™n avtomatik yÃ¼klÉ™ndi",
-        "btn_start": "ðŸš€ SÉ™yahÉ™t PlanÄ±nÄ± HazÄ±rla",
-        "err_missing": "âŒ ZÉ™hmÉ™t olmasa bÃ¼tÃ¼n ÅŸÉ™hÉ™rlÉ™ri vÉ™ Gemini API aÃ§arÄ±nÄ± daxil edin!",
-        "photo_cap": "ðŸ“¸ MÃ¶htÉ™ÅŸÉ™m MÉ™kan",
-        "weather_title": "â˜€ï¸ CanlÄ± Hava VÉ™ziyyÉ™ti",
-        "weather_high": "GÃ¶zlÉ™nilÉ™n Æn YÃ¼ksÉ™k",
-        "weather_low": "GÃ¶zlÉ™nilÉ™n Æn AÅŸaÄŸÄ±",
-        "weather_no_forecast": "â„¹ï¸ Bu tarix Ã¼Ã§Ã¼n anlÄ±q proqnoz yoxdur, mÃ¶vsÃ¼mi rejim aktivdir.",
-        "geo_not_found": "âš ï¸ Bu ÅŸÉ™hÉ™r tapÄ±lmadÄ±, adÄ± yoxlayÄ±b yenidÉ™n cÉ™hd edin.",
-        "expert_advice": "ðŸ’¡ Ekspert MÃ¶vsÃ¼m TÃ¶vsiyÉ™si",
-        "budget_title": "ðŸ“Š GÃ¼nlÃ¼k TÉ™xmini BÃ¼dcÉ™ BÃ¶lgÃ¼sÃ¼ (Ãœmumi)",
-        "hotel": "ðŸ¨ Otel vÉ™ Qalmaq",
-        "food": "ðŸ” YemÉ™k vÉ™ Restoran",
-        "transport": "ðŸš— NÉ™qliyyat vÉ™ ÆylÉ™ncÉ™",
-        "ai_title": "âœ¨ Sizin XÃ¼susi Ã‡oxÅŸÉ™hÉ™rli SÉ™yahÉ™t PlanÄ±nÄ±z",
-        "btn_download": "ðŸ“¥ PlanÄ± YÃ¼klÉ™",
-        "ai_error": "ðŸ’¥ SÃ¼ni Ä°ntellekt xÉ™tti mÉ™ÅŸÄŸuldur",
-        "weather_delay": "âš ï¸ Hava mÉ™lumatlarÄ±nda fasilÉ™ yarandÄ±",
-        "status_low": "ðŸ£ BÃ¼dcÉ™ EKONOMDUR! QÉ™naÉ™tli sÉ™yahÉ™t.",
-        "status_mid": "ðŸŽˆ BÃ¼dcÉ™ ORTADIR! BalanslÄ± vÉ™ rahat.",
-        "status_high": "ðŸŽ‰ BÃ¼dcÉ™ YAXÅžIDIR! Rahat vÉ™ lÃ¼ks sÉ™yahÉ™t edÉ™ bilÉ™rsiniz.",
-        "ai_role": "SÉ™n enerjili vÉ™ ÅŸÉ™n AI SÉ™yahÉ™t BÉ™lÉ™dÃ§isisÉ™n. AzÉ™rbaycan dilindÉ™ emojilÉ™rlÉ™ bol cavab ver.",
-        "spinner_weather": "ðŸŒ¦ï¸ Hava mÉ™lumatlarÄ± yÃ¼klÉ™nir...",
-        "spinner_ai": "ðŸ¤– AI planÄ±nÄ±zÄ± hazÄ±rlayÄ±r...",
-        "leg_of_trip": "MarÅŸrut hissÉ™si",
+        "title": "✈️ RoamPulse Səyahət Portalı",
+        "subtitle": "Səyahət planınızı yaradın, canlı hava durumunu və otelləri anında saytda görün!",
+        "settings": "⚙️ Tənzimləmələr",
+        "options": "📋 Səyahət Parametrləri",
+        "multi_city_title": "🗺️ Marşrut (Şəhərlər)",
+        "leg_city": "Şəhər",
+        "leg_days": "Gün",
+        "add_city": "➕ Şəhər əlavə et",
+        "remove_leg": "🗑️",
+        "total_days_label": "🧮 Ümumi Müddət",
+        "days_word": "gün",
+        "city_placeholder": "Məs: Paris, Tokyo, Roma",
+        "date": "📅 Səyahətin Başlama Tarixi",
+        "budget": "💰 Ümumi Büdcə (USD)",
+        "style": "🎭 Səyahət Tərzi",
+        "style_opt": ["Ekonom", "Orta", "Lüks"],
+        "interests": "🎯 Maraq Dairəsi",
+        "int_museums": "Tarix və Muzeylər",
+        "int_nature": "Təbiət və Parklar",
+        "int_food": "Yerli Mətbəx",
+        "int_night": "Gecə Həyatı",
+        "format": "📋 Hesabat Növü",
+        "format_opt": ["Detallı Plan", "Qısa Xülasə"],
+        "security": "🔑 Təhlükəsizlik",
+        "api_placeholder": "Açarınızı bura daxil edin",
+        "api_saved_msg": "✅ Açar .env-dən avtomatik yükləndi",
+        "btn_start": "🚀 Səyahət Planını Hazırla",
+        "err_missing": "❌ Zəhmət olmasa bütün şəhərləri və Gemini API açarını daxil edin!",
+        "photo_cap": "📸 Möhtəşəm Məkan",
+        "weather_title": "☀️ Canlı Hava Vəziyyəti",
+        "weather_high": "Gözlənilən Ən Yüksək",
+        "weather_low": "Gözlənilən Ən Aşağı",
+        "weather_no_forecast": "ℹ️ Bu tarix üçün anlıq proqnoz yoxdur, mövsümi rejim aktivdir.",
+        "geo_not_found": "⚠️ Bu şəhər tapılmadı, adı yoxlayıb yenidən cəhd edin.",
+        "expert_advice": "💡 Ekspert Mövsüm Tövsiyəsi",
+        "budget_title": "📊 Günlük Təxmini Büdcə Bölgüsü (Ümumi)",
+        "hotel": "🏨 Otel və Qalmaq",
+        "food": "🍔 Yemək və Restoran",
+        "transport": "🚗 Nəqliyyat və Əyləncə",
+        "ai_title": "✨ Sizin Xüsusi Çoxşəhərli Səyahət Planınız",
+        "btn_download": "📥 Planı Yüklə",
+        "ai_error": "💥 Süni İntellekt xətti məşğuldur",
+        "weather_delay": "⚠️ Hava məlumatlarında fasilə yarandı",
+        "status_low": "🐣 Büdcə EKONOMDUR! Qənaətli səyahət.",
+        "status_mid": "🎈 Büdcə ORTADIR! Balanslı və rahat.",
+        "status_high": "🎉 Büdcə YAXŞIDIR! Rahat və lüks səyahət edə bilərsiniz.",
+        "ai_role": "Sən enerjili və şən AI Səyahət Bələdçisisən. Azərbaycan dilində emojilərlə bol cavab ver.",
+        "spinner_weather": "🌦️ Hava məlumatları yüklənir...",
+        "spinner_ai": "🤖 AI planınızı hazırlayır...",
+        "leg_of_trip": "Marşrut hissəsi",
         "api_key_not_found": "Gemini API key was not found on the server. Add GEMINI_API_KEY in Streamlit Cloud > App settings > Secrets.",
-        "currency_label": "ðŸ’± Valyuta",
-        "azn_equivalent": "AZN-É™ Ã§evrilmiÅŸ",
-        "rate_caption": "MÉ™zÉ™nnÉ™",
-        "rate_error": "âš ï¸ MÉ™zÉ™nnÉ™ tapÄ±lmadÄ±, AZN Ã§evrilmÉ™si gÃ¶stÉ™rilmir."
+        "currency_label": "💱 Valyuta",
+        "azn_equivalent": "AZN-ə çevrilmiş",
+        "rate_caption": "Məzənnə",
+        "rate_error": "⚠️ Məzənnə tapılmadı, AZN çevrilməsi göstərilmir."
     },
     "EN": {
-        "title": "âœˆï¸ RoamPulse Travel Portal",
+        "title": "✈️ RoamPulse Travel Portal",
         "subtitle": "Create your travel plan, see live weather and hotels instantly on the site!",
-        "settings": "âš™ï¸ Settings",
-        "options": "ðŸ“‹ Travel Parameters",
-        "multi_city_title": "ðŸ—ºï¸ Route (Cities)",
+        "settings": "⚙️ Settings",
+        "options": "📋 Travel Parameters",
+        "multi_city_title": "🗺️ Route (Cities)",
         "leg_city": "City",
         "leg_days": "Days",
-        "add_city": "âž• Add city",
-        "remove_leg": "ðŸ—‘ï¸",
-        "total_days_label": "ðŸ§® Total Duration",
+        "add_city": "➕ Add city",
+        "remove_leg": "🗑️",
+        "total_days_label": "🧮 Total Duration",
         "days_word": "days",
         "city_placeholder": "E.g.: Paris, Tokyo, Rome",
-        "date": "ðŸ“… Trip Start Date",
-        "budget": "ðŸ’° Total Budget (USD)",
-        "style": "ðŸŽ­ Travel Style",
+        "date": "📅 Trip Start Date",
+        "budget": "💰 Total Budget (USD)",
+        "style": "🎭 Travel Style",
         "style_opt": ["Budget", "Mid-range", "Luxury"],
-        "interests": "ðŸŽ¯ Interests",
+        "interests": "🎯 Interests",
         "int_museums": "History & Museums",
         "int_nature": "Nature & Parks",
         "int_food": "Local Cuisine",
         "int_night": "Nightlife",
-        "format": "ðŸ“‹ Report Type",
+        "format": "📋 Report Type",
         "format_opt": ["Detailed Plan", "Short Summary"],
-        "security": "ðŸ”‘ Security",
+        "security": "🔑 Security",
         "api_placeholder": "Enter your key here",
-        "api_saved_msg": "âœ… Key auto-loaded from .env",
-        "btn_start": "ðŸš€ Prepare Travel Plan",
-        "err_missing": "âŒ Please fill in all cities and the Gemini API key!",
-        "photo_cap": "ðŸ“¸ Amazing Destination",
-        "weather_title": "â˜€ï¸ Live Weather Conditions",
+        "api_saved_msg": "✅ Key auto-loaded from .env",
+        "btn_start": "🚀 Prepare Travel Plan",
+        "err_missing": "❌ Please fill in all cities and the Gemini API key!",
+        "photo_cap": "📸 Amazing Destination",
+        "weather_title": "☀️ Live Weather Conditions",
         "weather_high": "Expected Max",
         "weather_low": "Expected Min",
-        "weather_no_forecast": "â„¹ï¸ No live forecast for this date, seasonal mode is active.",
-        "geo_not_found": "âš ï¸ City not found, please check the spelling and try again.",
-        "expert_advice": "ðŸ’¡ Expert Seasonal Advice",
-        "budget_title": "ðŸ“Š Estimated Daily Budget Allocation (Overall)",
-        "hotel": "ðŸ¨ Hotel & Stay",
-        "food": "ðŸ” Food & Dining",
-        "transport": "ðŸš— Transport & Leisure",
-        "ai_title": "âœ¨ Your Custom Multi-City Travel Plan",
-        "btn_download": "ðŸ“¥ Download Plan",
-        "ai_error": "ðŸ’¥ AI Line is busy",
-        "weather_delay": "âš ï¸ Temporary delay in weather data",
-        "status_low": "ðŸ£ Budget is BUDGET-FRIENDLY!",
-        "status_mid": "ðŸŽˆ Budget is MID-RANGE!",
-        "status_high": "ðŸŽ‰ Budget is GREAT! Enjoy luxury.",
+        "weather_no_forecast": "ℹ️ No live forecast for this date, seasonal mode is active.",
+        "geo_not_found": "⚠️ City not found, please check the spelling and try again.",
+        "expert_advice": "💡 Expert Seasonal Advice",
+        "budget_title": "📊 Estimated Daily Budget Allocation (Overall)",
+        "hotel": "🏨 Hotel & Stay",
+        "food": "🍔 Food & Dining",
+        "transport": "🚗 Transport & Leisure",
+        "ai_title": "✨ Your Custom Multi-City Travel Plan",
+        "btn_download": "📥 Download Plan",
+        "ai_error": "💥 AI Line is busy",
+        "weather_delay": "⚠️ Temporary delay in weather data",
+        "status_low": "🐣 Budget is BUDGET-FRIENDLY!",
+        "status_mid": "🎈 Budget is MID-RANGE!",
+        "status_high": "🎉 Budget is GREAT! Enjoy luxury.",
         "ai_role": "You are an energetic and cheerful AI Travel Guide. Provide your response in English with plenty of emojis.",
-        "spinner_weather": "ðŸŒ¦ï¸ Loading weather data...",
-        "spinner_ai": "ðŸ¤– AI is preparing your plan...",
+        "spinner_weather": "🌦️ Loading weather data...",
+        "spinner_ai": "🤖 AI is preparing your plan...",
         "leg_of_trip": "Trip leg",
         "api_key_not_found": "Gemini API key was not found on the server. Add GEMINI_API_KEY in Streamlit Cloud > App settings > Secrets.",
-        "currency_label": "ðŸ’± Currency",
+        "currency_label": "💱 Currency",
         "azn_equivalent": "Converted to AZN",
         "rate_caption": "Exchange rate",
-        "rate_error": "âš ï¸ Exchange rate not found, AZN conversion unavailable."
+        "rate_error": "⚠️ Exchange rate not found, AZN conversion unavailable."
     }
 }
 
 def measure_time(func):
     """
-    Ã–z yazdÄ±ÄŸÄ±mÄ±z dekorator: funksiyanÄ±n icra mÃ¼ddÉ™tini Ã¶lÃ§Ã¼b sidebar-Ä±n
-    altÄ±nda kiÃ§ik bir caption kimi gÃ¶stÉ™rir. SillabusdakÄ± 'Dekoratorlar'
-    mÃ¶vzusunu gÃ¶stÉ™rmÉ™k Ã¼Ã§Ã¼n É™lavÉ™ edilib - @st.cache_data ilÉ™ birlikdÉ™
-    stack olunaraq iÅŸlÉ™yir (É™vvÉ™lcÉ™ functools.wraps ilÉ™ orijinal funksiyanÄ±n
-    adÄ±/metadatasÄ± qorunur, sonra É™sl funksiya Ã§aÄŸÄ±rÄ±lÄ±r vÉ™ vaxt Ã¶lÃ§Ã¼lÃ¼r).
+    Öz yazdığımız dekorator: funksiyanın icra müddətini ölçüb sidebar-ın
+    altında kiçik bir caption kimi göstərir. Sillabusdakı 'Dekoratorlar'
+    mövzusunu göstərmək üçün əlavə edilib - @st.cache_data ilə birlikdə
+    stack olunaraq işləyir (əvvəlcə functools.wraps ilə orijinal funksiyanın
+    adı/metadatası qorunur, sonra əsl funksiya çağırılır və vaxt ölçülür).
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.perf_counter()
         result = func(*args, **kwargs)
         elapsed = time.perf_counter() - start
-        # YalnÄ±z 10ms-dÉ™n Ã§ox Ã§É™kÉ™ndÉ™ gÃ¶stÉ™ririk (keÅŸlÉ™nmiÅŸ Ã§aÄŸÄ±rÄ±ÅŸlar demÉ™k olar 0ms-dir)
+        # Yalnız 10ms-dən çox çəkəndə göstəririk (keşlənmiş çağırışlar demək olar 0ms-dir)
         if elapsed > 0.01:
-            st.caption(f"â±ï¸ `{func.__name__}` â†’ {elapsed:.2f}s")
+            st.caption(f"⏱️ `{func.__name__}` → {elapsed:.2f}s")
         return result
     return wrapper
 
@@ -191,13 +191,13 @@ def get_weather(lat: float, lon: float, date_str: str):
 
 
 CURRENCY_OPTIONS = ["USD", "EUR", "GBP", "AZN", "TRY", "RUB"]
-CURRENCY_SYMBOLS = {"USD": "$", "EUR": "â‚¬", "GBP": "Â£", "AZN": "â‚¼", "TRY": "â‚º", "RUB": "â‚½"}
+CURRENCY_SYMBOLS = {"USD": "$", "EUR": "€", "GBP": "£", "AZN": "₼", "TRY": "₺", "RUB": "₽"}
 
 
 @measure_time
 @st.cache_data(ttl=3600, show_spinner=False)
 def get_exchange_rate_to_azn(base_currency: str):
-    """SeÃ§ilmiÅŸ valyutadan 1 vahidin bugÃ¼nkÃ¼ AZN qarÅŸÄ±lÄ±ÄŸÄ±nÄ± qaytarÄ±r. AZN seÃ§ilibsÉ™ 1.0 qaytarÄ±r."""
+    """Seçilmiş valyutadan 1 vahidin bugünkü AZN qarşılığını qaytarır. AZN seçilibsə 1.0 qaytarır."""
     if base_currency == "AZN":
         return 1.0
     url = f"https://open.er-api.com/v6/latest/{base_currency}"
@@ -219,18 +219,18 @@ def fun_status_card(emoji: str, text: str, color: str, text_color: str = "#fffff
 def seasonal_note(city_lower: str, travel_month: int):
     if "roma" in city_lower or "rome" in city_lower:
         if travel_month in [7, 8]:
-            return True, ("ðŸ”¥ Roma yay aylarÄ±nda (Ä°yul-Avqust) hÉ™ddindÉ™n artÄ±q isti vÉ™ boÄŸucu olur. "
-                           "GÉ™zinti Ã¼Ã§Ã¼n É™lveriÅŸli deyil. Alternativ olaraq Aprel-May vÉ™ ya "
-                           "Sentyabr-Oktyabr aylarÄ±nÄ± tÃ¶vsiyÉ™ edirik.")
-        return False, "âœˆï¸ MÃ¶vsÃ¼m Roma kÉ™ÅŸfi Ã¼Ã§Ã¼n idealdÄ±r!"
+            return True, ("🔥 Roma yay aylarında (İyul-Avqust) həddindən artıq isti və boğucu olur. "
+                           "Gəzinti üçün əlverişli deyil. Alternativ olaraq Aprel-May və ya "
+                           "Sentyabr-Oktyabr aylarını tövsiyə edirik.")
+        return False, "✈️ Mövsüm Roma kəşfi üçün idealdır!"
     if "tokyo" in city_lower and travel_month in [3, 4]:
-        return False, "ðŸŒ¸ Sakura dÃ¶vrÃ¼dÃ¼r! MÃ¶htÉ™ÅŸÉ™m vaxt seÃ§imi."
-    return False, "âœˆï¸ SeÃ§diyiniz dÃ¶vr sÉ™yahÉ™t Ã¼Ã§Ã¼n uyÄŸundur!"
+        return False, "🌸 Sakura dövrüdür! Möhtəşəm vaxt seçimi."
+    return False, "✈️ Seçdiyiniz dövr səyahət üçün uyğundur!"
 
 
 with st.sidebar:
-    st.markdown("<h2 style='color:#FF4B2B; margin-bottom:0;'>âš™ï¸ TÉ™nzimlÉ™mÉ™lÉ™r</h2>", unsafe_allow_html=True)
-    lang = st.selectbox("ðŸŒ Language / Dil", ["AZ", "EN"])
+    st.markdown("<h2 style='color:#FF4B2B; margin-bottom:0;'>⚙️ Tənzimləmələr</h2>", unsafe_allow_html=True)
+    lang = st.selectbox("🌐 Language / Dil", ["AZ", "EN"])
     T = LANG_DICT[lang]
 
 st.markdown("""
@@ -371,10 +371,10 @@ if st.button(T["btn_start"], use_container_width=True):
             st.markdown("<div class='animated-card'>", unsafe_allow_html=True)
             st.markdown(
                 f"<span class='leg-badge'>{T['leg_of_trip']} {idx + 1}/{len(legs)}: "
-                f"{leg_start.strftime('%d.%m')} â†’ {leg_end.strftime('%d.%m')} ({leg_days} {T['days_word']})</span>",
+                f"{leg_start.strftime('%d.%m')} → {leg_end.strftime('%d.%m')} ({leg_days} {T['days_word']})</span>",
                 unsafe_allow_html=True
             )
-            st.subheader(f"ðŸ“ {city}")
+            st.subheader(f"📍 {city}")
 
             img_url = f"https://loremflickr.com/1000/350/{quote(city)},travel,landmark/all"
             st.image(img_url, caption=f"{T['photo_cap']}: {city}", use_container_width=True)
@@ -393,8 +393,8 @@ if st.button(T["btn_start"], use_container_width=True):
                             min_t = w_data['daily']['temperature_2m_min'][0]
 
                             col_w1, col_w2 = st.columns(2)
-                            col_w1.metric(f"{T['weather_high']} ({city})", f"{max_t} Â°C")
-                            col_w2.metric(f"{T['weather_low']} ({city})", f"{min_t} Â°C")
+                            col_w1.metric(f"{T['weather_high']} ({city})", f"{max_t} °C")
+                            col_w2.metric(f"{T['weather_low']} ({city})", f"{min_t} °C")
 
                             if max_t > 38 or max_t < 0:
                                 any_bad_weather = True
@@ -428,14 +428,14 @@ if st.button(T["btn_start"], use_container_width=True):
 
         if rate_to_azn:
             st.caption(
-                f"{T['rate_caption']}: 1 {currency} â‰ˆ {rate_to_azn:.4f} AZN "
-                f"â†’ {T['azn_equivalent']}: **{budget * rate_to_azn:,.2f} â‚¼**"
+                f"{T['rate_caption']}: 1 {currency} ≈ {rate_to_azn:.4f} AZN "
+                f"→ {T['azn_equivalent']}: **{budget * rate_to_azn:,.2f} ₼**"
             )
 
         def fmt_amount(amount: float) -> str:
             text = f"{symbol}{amount:.2f}"
             if rate_to_azn:
-                text += f"  (â‰ˆ {amount * rate_to_azn:.2f} â‚¼)"
+                text += f"  (≈ {amount * rate_to_azn:.2f} ₼)"
             return text
 
         daily_budget = budget / total_days
@@ -448,23 +448,23 @@ if st.button(T["btn_start"], use_container_width=True):
         col_b2.metric(T["food"], fmt_amount(food_share))
         col_b3.metric(T["transport"], fmt_amount(trans_share))
 
-        # BÃ¼dcÉ™ statusu valyutadan asÄ±lÄ± olmayaraq dÃ¼zgÃ¼n iÅŸlÉ™sin deyÉ™, mÃ¼qayisÉ™ni AZN Ã¼zÉ™rindÉ™n aparÄ±rÄ±q
+        # Büdcə statusu valyutadan asılı olmayaraq düzgün işləsin deyə, müqayisəni AZN üzərindən aparırıq
         daily_budget_azn = daily_budget * rate_to_azn if rate_to_azn else daily_budget
 
         col_g1, col_g2 = st.columns([1, 2])
         if daily_budget_azn < 120:
             with col_g1:
-                fun_status_card("ðŸ£", "Econo-mode!", "#FF3B30")
+                fun_status_card("🐣", "Econo-mode!", "#FF3B30")
             with col_g2:
                 st.markdown(f'<div class="status-box" style="background:#FF3B30;">{T["status_low"]}</div>', unsafe_allow_html=True)
         elif 120 <= daily_budget_azn <= 300:
             with col_g1:
-                fun_status_card("ðŸŽˆ", "Balanced!", "#FFCC00", text_color="#1C1C1E")
+                fun_status_card("🎈", "Balanced!", "#FFCC00", text_color="#1C1C1E")
             with col_g2:
                 st.markdown(f'<div class="status-box" style="background:#FFCC00; color:#1C1C1E;">{T["status_mid"]}</div>', unsafe_allow_html=True)
         else:
             with col_g1:
-                fun_status_card("ðŸŽ‰", "Luxury mode!", "#34C759")
+                fun_status_card("🎉", "Luxury mode!", "#34C759")
             with col_g2:
                 st.markdown(f'<div class="status-box" style="background:#34C759;">{T["status_high"]}</div>', unsafe_allow_html=True)
 
@@ -478,27 +478,27 @@ if st.button(T["btn_start"], use_container_width=True):
         interests_str = ", ".join(selected_interests) if selected_interests else "-"
 
         format_instruction = (
-            "gÃ¼nbÉ™gÃ¼n DETALLI, otel mÉ™slÉ™hÉ™tlÉ™ri daxil olmaqla geniÅŸ marÅŸrut yaz"
-            if is_detailed else "Ã§ox qÄ±sa xÃ¼lasÉ™ yaz"
+            "günbəgün DETALLI, otel məsləhətləri daxil olmaqla geniş marşrut yaz"
+            if is_detailed else "çox qısa xülasə yaz"
         )
 
         route_lines = []
         cd = travel_date
         for leg in legs:
             leg_end = cd + datetime.timedelta(days=leg["days"] - 1)
-            route_lines.append(f"- {leg['city']}: {cd.strftime('%d.%m.%Y')} - {leg_end.strftime('%d.%m.%Y')} ({leg['days']} gÃ¼n)")
+            route_lines.append(f"- {leg['city']}: {cd.strftime('%d.%m.%Y')} - {leg_end.strftime('%d.%m.%Y')} ({leg['days']} gün)")
             cd = leg_end + datetime.timedelta(days=1)
         route_description = "\n".join(route_lines)
 
         alt_date_prompt = ""
         if any_bad_weather and weather_notes:
             alt_date_prompt = (
-                "HÉ™mÃ§inin bÉ™zi ÅŸÉ™hÉ™rlÉ™r Ã¼Ã§Ã¼n hava/mÃ¶vsÃ¼m baxÄ±mÄ±ndan qeydlÉ™r var: "
+                "Həmçinin bəzi şəhərlər üçün hava/mövsüm baxımından qeydlər var: "
                 + " | ".join(weather_notes)
-                + " ZÉ™hmÉ™t olmasa bunlarÄ± nÉ™zÉ™rÉ™ alaraq ayrÄ±ca bir baÅŸlÄ±qda alternativ tÃ¶vsiyÉ™lÉ™r ver."
+                + " Zəhmət olmasa bunları nəzərə alaraq ayrıca bir başlıqda alternativ tövsiyələr ver."
             )
 
-        budget_azn_note = f" (â‰ˆ {budget * rate_to_azn:,.2f} AZN)" if rate_to_azn else ""
+        budget_azn_note = f" (≈ {budget * rate_to_azn:,.2f} AZN)" if rate_to_azn else ""
         cities_joined = "-".join(leg["city"] for leg in legs)
         ai_plan = None
 
@@ -508,19 +508,19 @@ if st.button(T["btn_start"], use_container_width=True):
 
                 prompt = f"""
                 {T['ai_role']}
-                MÃ¼ÅŸtÉ™ri aÅŸaÄŸÄ±dakÄ± Ã‡OXÅžÆHÆRLÄ° marÅŸrutla sÉ™yahÉ™t edÉ™cÉ™k (Ã¼mumi {total_days} gÃ¼n):
+                Müştəri aşağıdakı ÇOXŞƏHƏRLİ marşrutla səyahət edəcək (ümumi {total_days} gün):
                 {route_description}
 
-                Ãœmumi BÃ¼dcÉ™: {symbol}{budget} {currency}{budget_azn_note} (TÉ™rz: {style}).
-                GÃ¼nlÃ¼k orta otel bÃ¼dcÉ™si: {fmt_amount(hotel_share)}.
-                MÃ¼ÅŸtÉ™rinin XÃ¼susi Maraq DairÉ™lÉ™ri: {interests_str}.
+                Ümumi Büdcə: {symbol}{budget} {currency}{budget_azn_note} (Tərz: {style}).
+                Günlük orta otel büdcəsi: {fmt_amount(hotel_share)}.
+                Müştərinin Xüsusi Maraq Dairələri: {interests_str}.
 
-                ZÉ™hmÉ™t olmasa TÆK bir bitiÅŸik plan yaz: ÅŸÉ™hÉ™rdÉ™n ÅŸÉ™hÉ™rÉ™ keÃ§id tÃ¶vsiyÉ™lÉ™ri
-                (mÉ™sÉ™lÉ™n qatar/tÉ™yyarÉ™ variantlarÄ±) daxil olmaqla, hÉ™r ÅŸÉ™hÉ™r Ã¼Ã§Ã¼n ayrÄ±ca baÅŸlÄ±q aÃ§ vÉ™
-                o ÅŸÉ™hÉ™rin gÃ¼nlÉ™rini ardÄ±cÄ±l olaraq planla (mÉ™s: "GÃ¼n 1-4: Tokio", "GÃ¼n 5-7: Osaka").
-                HÉ™r ÅŸÉ™hÉ™rdÉ™ maraqlara uyÄŸun yerlÉ™r vÉ™ otel/qalacaq yer tÃ¶vsiyÉ™lÉ™ri olsun.
+                Zəhmət olmasa TƏK bir bitişik plan yaz: şəhərdən şəhərə keçid tövsiyələri
+                (məsələn qatar/təyyarə variantları) daxil olmaqla, hər şəhər üçün ayrıca başlıq aç və
+                o şəhərin günlərini ardıcıl olaraq planla (məs: "Gün 1-4: Tokio", "Gün 5-7: Osaka").
+                Hər şəhərdə maraqlara uyğun yerlər və otel/qalacaq yer tövsiyələri olsun.
                 {format_instruction}. {alt_date_prompt}
-                Markdown formatÄ±nda, baÅŸlÄ±qlarla struktura salÄ±nmÄ±ÅŸ cavab ver.
+                Markdown formatında, başlıqlarla struktura salınmış cavab ver.
                 """
 
                 response = client.models.generate_content(model='gemini-2.5-flash', contents=prompt)
