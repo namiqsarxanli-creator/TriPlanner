@@ -1,0 +1,5 @@
+# CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS                    PORTS                                             NAMES
+# b7a06b92389f   n8nio/n8n:latest       "tini -- /docker-ent…"   29 minutes ago   Up 28 minutes             0.0.0.0:5678->5678/tcp, [::]:5678->5678/tcp       n8n
+# d6af412cb400   postgres:16-alpine     "docker-entrypoint.s…"   29 minutes ago   Up 29 minutes (healthy)   5432/tcp                                          self-hosted-ai-starter-kit-postgres-1
+# 13a11b06e68f   qdrant/qdrant          "./entrypoint.sh"        29 minutes ago   Up 29 minutes             0.0.0.0:6333->6333/tcp, [::]:6333->6333/tcp       qdrant
+# 15813a4f9371   ollama/ollama:latest   "/bin/ollama serve"      29 minutes ago   Up 29 minutes             0.0.0.0:11434->11434/tcp, [::]:11434->11434/tcp
