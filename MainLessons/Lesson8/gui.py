@@ -29,6 +29,125 @@ def get_secret(key: str, default: str = "") -> str:
 
 st.set_page_config(page_title="RoamPulse Pro", page_icon="✈️", layout="wide")
 
+"""
+ROAMPULSE EXPLORER — LÜKS DİZAYN MODULU
+=========================================
+Bu faylı öz layihənə əlavə et, sonra app.py-də (ən yuxarıda, page_config-dən sonra) belə çağır:
+
+    from roampulse_luxury_theme import inject_luxury_theme
+    inject_luxury_theme()
+
+Bu bir funksiyadır — heç bir başqa kodunu pozmur, sadəcə CSS injection edir.
+"""
+
+import streamlit as st
+
+
+def inject_luxury_theme():
+    st.markdown(
+        """
+        <style>
+        /* ============ FONTLAR ============ */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Inter:wght@300;400;500;600&display=swap');
+
+        html, body, [class*="css"]  {
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif !important;
+            letter-spacing: 0.5px;
+        }
+
+        /* ============ ARXA PLAN — TÜND LÜKS + SİLUET NAXIŞI ============ */
+        .stApp {
+            background-color: #0b1120;
+            background-image:
+                linear-gradient(180deg, rgba(11,17,32,0.94) 0%, rgba(15,23,42,0.97) 100%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.4' opacity='0.16'%3E%3C!-- Eyfel qulesi --%3E%3Cpath d='M60 300 L75 150 L85 150 L100 300 M65 220 L95 220 M70 180 L90 180 M80 150 L80 120 L80 100'/%3E%3C!-- Piramida --%3E%3Cpath d='M180 300 L220 210 L260 300 Z M195 300 L245 300'/%3E%3C!-- Big Ben --%3E%3Cpath d='M330 300 L330 160 Q330 140 350 140 Q370 140 370 160 L370 300 M320 300 L380 300 M340 130 L360 130 L350 110 Z'/%3E%3C!-- Taj Mahal gunbezi --%3E%3Cpath d='M430 300 L430 230 Q430 190 460 180 Q490 190 490 230 L490 300 M420 300 L500 300 M460 180 L460 165'/%3E%3C!-- Pagoda --%3E%3Cpath d='M530 300 L530 250 M510 250 L550 250 M515 230 L545 230 L530 210 Z M505 260 L555 260'/%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.2' opacity='0.10'%3E%3Cpath d='M60 300 L75 150 L85 150 L100 300 M65 220 L95 220 M70 180 L90 180'/%3E%3Cpath d='M180 300 L220 210 L260 300 Z'/%3E%3Cpath d='M330 300 L330 160 Q330 140 350 140 Q370 140 370 160 L370 300'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat, repeat, repeat;
+            background-size: 600px 400px, 600px 400px, 900px 600px;
+            background-position: 0 0, 300px 200px, 150px 100px;
+        }
+
+        /* ============ BAŞLIQ ============ */
+        h1 {
+            color: #f4e4bc !important;
+            text-align: center;
+            font-weight: 900 !important;
+            text-shadow: 0 0 18px rgba(201,162,74,0.35);
+        }
+
+        h2, h3, p, label, span, div {
+            color: #e8e4da;
+        }
+
+        /* ============ KARTLAR / KONTEYNERLƏR — ŞÜŞƏ EFFEKTİ ============ */
+        div[data-testid="stVerticalBlockBorderWrapper"],
+        div[data-testid="stForm"] {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(201,162,74,0.35);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            padding: 8px;
+        }
+
+        /* ============ DÜYMƏLƏR ============ */
+        .stButton > button, .stFormSubmitButton > button {
+            background: linear-gradient(135deg, #c9a24a 0%, #e8c874 50%, #c9a24a 100%);
+            color: #0b1120 !important;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 0.6rem 1.4rem;
+            letter-spacing: 0.5px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(201,162,74,0.3);
+        }
+        .stButton > button:hover, .stFormSubmitButton > button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(201,162,74,0.5);
+        }
+
+        /* ============ INPUT SAHƏLƏRİ ============ */
+        .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"],
+        .stDateInput input, .stTextArea textarea {
+            background-color: rgba(255,255,255,0.06) !important;
+            color: #f4e4bc !important;
+            border: 1px solid rgba(201,162,74,0.4) !important;
+            border-radius: 8px !important;
+        }
+
+        /* ============ SIDEBAR ============ */
+        section[data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #0f172a 0%, #0b1120 100%);
+            border-right: 1px solid rgba(201,162,74,0.25);
+        }
+
+        /* ============ METRIKLƏR / TABLAR ============ */
+        div[data-testid="stMetric"] {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(201,162,74,0.25);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        /* ============ SCROLLBAR ============ */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0b1120; }
+        ::-webkit-scrollbar-thumb { background: #c9a24a; border-radius: 5px; }
+
+        /* ============ DIVIDER ============ */
+        hr {
+            border-color: rgba(201,162,74,0.3) !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 DEFAULT_API_KEY = get_secret("GEMINI_API_KEY")
 
 LANG_DICT = {
