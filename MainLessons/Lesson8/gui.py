@@ -29,29 +29,23 @@ def get_secret(key: str, default: str = "") -> str:
 
 st.set_page_config(page_title="RoamPulse Pro", page_icon="✈️", layout="wide")
 
-"""
-ROAMPULSE EXPLORER — LÜKS DİZAYN MODULU
-=========================================
-Bu faylı öz layihənə əlavə et, sonra app.py-də (ən yuxarıda, page_config-dən sonra) belə çağır:
-
-    from roampulse_luxury_theme import inject_luxury_theme
-    inject_luxury_theme()
-
-Bu bir funksiyadır — heç bir başqa kodunu pozmur, sadəcə CSS injection edir.
-"""
-
-import streamlit as st
-
 
 def inject_luxury_theme():
+    """
+    ROAMPULSE EXPLORER — LÜKS DİZAYN MODULU
+    Tünd lacivərd fon + qızılı ton, arxa planda məşhur landmarkların incə
+    siluetləri, şüşə effektli kartlar. Kodun içindəki .main-title, .animated-card,
+    .leg-badge, .bounce-card, .status-box, .mobile-form-card klasları qorunub,
+    sadəcə rəng palitrası dəyişdirilib ki, aşağıdakı hissələrin heç biri qırılmasın.
+    """
     st.markdown(
         """
         <style>
         /* ============ FONTLAR ============ */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Inter:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Poppins:wght@300;400;600;700&display=swap');
 
-        html, body, [class*="css"]  {
-            font-family: 'Inter', sans-serif;
+        html, body, [class*="css"] {
+            font-family: 'Poppins', sans-serif;
         }
 
         h1, h2, h3 {
@@ -64,52 +58,70 @@ def inject_luxury_theme():
             background-color: #0b1120;
             background-image:
                 linear-gradient(180deg, rgba(11,17,32,0.94) 0%, rgba(15,23,42,0.97) 100%),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.4' opacity='0.16'%3E%3C!-- Eyfel qulesi --%3E%3Cpath d='M60 300 L75 150 L85 150 L100 300 M65 220 L95 220 M70 180 L90 180 M80 150 L80 120 L80 100'/%3E%3C!-- Piramida --%3E%3Cpath d='M180 300 L220 210 L260 300 Z M195 300 L245 300'/%3E%3C!-- Big Ben --%3E%3Cpath d='M330 300 L330 160 Q330 140 350 140 Q370 140 370 160 L370 300 M320 300 L380 300 M340 130 L360 130 L350 110 Z'/%3E%3C!-- Taj Mahal gunbezi --%3E%3Cpath d='M430 300 L430 230 Q430 190 460 180 Q490 190 490 230 L490 300 M420 300 L500 300 M460 180 L460 165'/%3E%3C!-- Pagoda --%3E%3Cpath d='M530 300 L530 250 M510 250 L550 250 M515 230 L545 230 L530 210 Z M505 260 L555 260'/%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.4' opacity='0.16'%3E%3Cpath d='M60 300 L75 150 L85 150 L100 300 M65 220 L95 220 M70 180 L90 180 M80 150 L80 120 L80 100'/%3E%3Cpath d='M180 300 L220 210 L260 300 Z M195 300 L245 300'/%3E%3Cpath d='M330 300 L330 160 Q330 140 350 140 Q370 140 370 160 L370 300 M320 300 L380 300 M340 130 L360 130 L350 110 Z'/%3E%3Cpath d='M430 300 L430 230 Q430 190 460 180 Q490 190 490 230 L490 300 M420 300 L500 300 M460 180 L460 165'/%3E%3Cpath d='M530 300 L530 250 M510 250 L550 250 M515 230 L545 230 L530 210 Z M505 260 L555 260'/%3E%3C/g%3E%3C/svg%3E"),
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.2' opacity='0.10'%3E%3Cpath d='M60 300 L75 150 L85 150 L100 300 M65 220 L95 220 M70 180 L90 180'/%3E%3Cpath d='M180 300 L220 210 L260 300 Z'/%3E%3Cpath d='M330 300 L330 160 Q330 140 350 140 Q370 140 370 160 L370 300'/%3E%3C/g%3E%3C/svg%3E");
             background-repeat: repeat, repeat, repeat;
             background-size: 600px 400px, 600px 400px, 900px 600px;
             background-position: 0 0, 300px 200px, 150px 100px;
+            background-attachment: fixed;
         }
 
-        /* ============ BAŞLIQ ============ */
-        h1 {
-            color: #f4e4bc !important;
-            text-align: center;
-            font-weight: 900 !important;
-            text-shadow: 0 0 18px rgba(201,162,74,0.35);
+        /* ============ BAŞLIQ (main-title klası kodda istifadə olunur) ============ */
+        .main-title {
+            background: linear-gradient(45deg, #c9a24a, #f4e4bc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 42px; font-weight: 700; text-align: center; margin-bottom: 5px;
+            text-shadow: 0 0 18px rgba(201,162,74,0.25);
+        }
+        .subtitle-text { text-align: center; color: #b8b2a3; font-size: 16px; margin-bottom: 10px; }
+
+        h2, h3, p, label, span, div { color: #e8e4da; }
+
+        /* ============ KARTLAR — ŞÜŞƏ EFFEKTİ ============ */
+        .animated-card, .mobile-form-card {
+            background: rgba(255,255,255,0.04);
+            padding: 25px; border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4); margin-bottom: 25px;
+            border: 1px solid rgba(201,162,74,0.3);
+            backdrop-filter: blur(10px);
         }
 
-        h2, h3, p, label, span, div {
-            color: #e8e4da;
-        }
-
-        /* ============ KARTLAR / KONTEYNERLƏR — ŞÜŞƏ EFFEKTİ ============ */
-        div[data-testid="stVerticalBlockBorderWrapper"],
         div[data-testid="stForm"] {
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(201,162,74,0.35);
             border-radius: 16px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-            padding: 8px;
+        }
+
+        .leg-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #c9a24a 0%, #e8c874 100%);
+            color: #0b1120; font-weight: 700; padding: 4px 14px; border-radius: 999px;
+            font-size: 13px; margin-bottom: 10px;
         }
 
         /* ============ DÜYMƏLƏR ============ */
-        .stButton > button, .stFormSubmitButton > button {
+        .stButton>button, .stFormSubmitButton > button {
             background: linear-gradient(135deg, #c9a24a 0%, #e8c874 50%, #c9a24a 100%);
-            color: #0b1120 !important;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            padding: 0.6rem 1.4rem;
-            letter-spacing: 0.5px;
-            transition: all 0.25s ease;
+            color: #0b1120 !important; border: none; border-radius: 10px;
+            padding: 12px 28px; font-size: 16px; font-weight: 600;
+            letter-spacing: 0.5px; transition: all 0.2s ease;
             box-shadow: 0 4px 14px rgba(201,162,74,0.3);
         }
-        .stButton > button:hover, .stFormSubmitButton > button:hover {
-            transform: translateY(-2px);
+        .stButton>button:hover, .stFormSubmitButton > button:hover {
+            transform: translateY(-2px) scale(1.02);
             box-shadow: 0 8px 22px rgba(201,162,74,0.5);
         }
+
+        .status-box { padding: 15px; border-radius: 10px; font-weight: 600; text-align: center; margin-bottom: 15px; }
+
+        .bounce-card {
+            display: flex; align-items: center; gap: 14px; padding: 18px 22px;
+            border-radius: 14px; font-weight: 700; font-size: 17px; height: 100%;
+        }
+        .bounce-emoji { font-size: 42px; display: inline-block; animation: bounce 1.4s ease-in-out infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         /* ============ INPUT SAHƏLƏRİ ============ */
         .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"],
@@ -126,27 +138,35 @@ def inject_luxury_theme():
             border-right: 1px solid rgba(201,162,74,0.25);
         }
 
-        /* ============ METRIKLƏR / TABLAR ============ */
+        /* ============ METRIKLƏR ============ */
         div[data-testid="stMetric"] {
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(201,162,74,0.25);
-            border-radius: 12px;
-            padding: 12px;
+            border-radius: 12px; padding: 12px;
         }
 
-        /* ============ SCROLLBAR ============ */
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #0b1120; }
         ::-webkit-scrollbar-thumb { background: #c9a24a; border-radius: 5px; }
 
-        /* ============ DIVIDER ============ */
-        hr {
-            border-color: rgba(201,162,74,0.3) !important;
+        hr { border-color: rgba(201,162,74,0.3) !important; }
+
+        @media (max-width: 640px) {
+            .block-container { padding: 1rem 0.8rem 2rem; }
+            .main-title { font-size: 32px; line-height: 1.15; }
+            .subtitle-text { font-size: 14px; }
+            .mobile-form-card { padding: 16px; border-radius: 10px; }
+            .animated-card { padding: 16px; border-radius: 10px; }
+            .stButton>button { min-height: 48px; padding: 10px 14px; font-size: 15px; }
+            [data-testid="stMetric"] { overflow-wrap: anywhere; }
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
+
+
+inject_luxury_theme()
 
 DEFAULT_API_KEY = get_secret("GEMINI_API_KEY")
 
@@ -348,60 +368,9 @@ def seasonal_note(city_lower: str, travel_month: int):
 
 
 with st.sidebar:
-    st.markdown("<h2 style='color:#FF4B2B; margin-bottom:0;'>⚙️ Tənzimləmələr</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color:#c9a24a; margin-bottom:0;'>⚙️ Tənzimləmələr</h2>", unsafe_allow_html=True)
     lang = st.selectbox("🌐 Language / Dil", ["AZ", "EN"])
     T = LANG_DICT[lang]
-
-st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-    html, body, [class*="css"] { font-family: 'Poppins', sans-serif; }
-    .main-title {
-        background: linear-gradient(45deg, #FF416C, #FF4B2B);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 42px; font-weight: 700; text-align: center; margin-bottom: 5px;
-    }
-    .subtitle-text { text-align: center; color: #a4b0be; font-size: 16px; margin-bottom: 10px; }
-    .animated-card {
-        background-color: #1e1e24; padding: 25px; border-radius: 16px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.35); margin-bottom: 25px;
-        border: 1px solid rgba(255,255,255,0.05);
-    }
-    .leg-badge {
-        display: inline-block; background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
-        color: #0b0b0d; font-weight: 700; padding: 4px 14px; border-radius: 999px;
-        font-size: 13px; margin-bottom: 10px;
-    }
-    .stButton>button {
-        background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%); color: white;
-        border-radius: 8px; padding: 12px 28px; font-size: 16px; font-weight: 600;
-        border: none; transition: transform 0.15s ease;
-    }
-    .stButton>button:hover { transform: scale(1.02); }
-    .status-box { padding: 15px; border-radius: 10px; font-weight: 600; text-align: center; margin-bottom: 15px; }
-    .bounce-card {
-        display: flex; align-items: center; gap: 14px; padding: 18px 22px;
-        border-radius: 14px; font-weight: 700; font-size: 17px; height: 100%;
-    }
-    .bounce-emoji { font-size: 42px; display: inline-block; animation: bounce 1.4s ease-in-out infinite; }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    .mobile-form-card {
-        background-color: #1e1e24; padding: 22px; border-radius: 14px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.28); margin-bottom: 20px;
-        border: 1px solid rgba(255,255,255,0.06);
-    }
-    @media (max-width: 640px) {
-        .block-container { padding: 1rem 0.8rem 2rem; }
-        .main-title { font-size: 32px; line-height: 1.15; }
-        .subtitle-text { font-size: 14px; }
-        .mobile-form-card { padding: 16px; border-radius: 10px; }
-        .animated-card { padding: 16px; border-radius: 10px; }
-        .stButton>button { min-height: 48px; padding: 10px 14px; font-size: 15px; }
-        [data-testid="stMetric"] { overflow-wrap: anywhere; }
-    }
-    </style>
-""", unsafe_allow_html=True)
 
 st.markdown(f"<h1 class='main-title'>{T['title']}</h1>", unsafe_allow_html=True)
 st.markdown(f"<p class='subtitle-text'>{T['subtitle']}</p>", unsafe_allow_html=True)
@@ -573,19 +542,19 @@ if st.button(T["btn_start"], use_container_width=True):
         col_g1, col_g2 = st.columns([1, 2])
         if daily_budget_azn < 120:
             with col_g1:
-                fun_status_card("🐣", "Econo-mode!", "#FF3B30")
+                fun_status_card("🐣", "Econo-mode!", "#8B3A2A")
             with col_g2:
-                st.markdown(f'<div class="status-box" style="background:#FF3B30;">{T["status_low"]}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="status-box" style="background:#8B3A2A;">{T["status_low"]}</div>', unsafe_allow_html=True)
         elif 120 <= daily_budget_azn <= 300:
             with col_g1:
-                fun_status_card("🎈", "Balanced!", "#FFCC00", text_color="#1C1C1E")
+                fun_status_card("🎈", "Balanced!", "#c9a24a", text_color="#0b1120")
             with col_g2:
-                st.markdown(f'<div class="status-box" style="background:#FFCC00; color:#1C1C1E;">{T["status_mid"]}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="status-box" style="background:#c9a24a; color:#0b1120;">{T["status_mid"]}</div>', unsafe_allow_html=True)
         else:
             with col_g1:
-                fun_status_card("🎉", "Luxury mode!", "#34C759")
+                fun_status_card("🎉", "Luxury mode!", "#2E7D5B")
             with col_g2:
-                st.markdown(f'<div class="status-box" style="background:#34C759;">{T["status_high"]}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="status-box" style="background:#2E7D5B;">{T["status_high"]}</div>', unsafe_allow_html=True)
 
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -660,4 +629,3 @@ if st.button(T["btn_start"], use_container_width=True):
                 mime="text/plain",
                 use_container_width=True
             )
-
