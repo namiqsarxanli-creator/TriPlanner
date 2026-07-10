@@ -13,11 +13,6 @@ load_dotenv(dotenv_path=ENV_PATH)
 
 
 def get_secret(key: str, default: str = "") -> str:
-    """
-    Açarı əvvəlcə .env-dən (lokal inkişaf üçün), tapılmasa
-    Streamlit Cloud-un öz Secrets sistemindən (st.secrets) oxuyur.
-    Beləliklə eyni kod həm PyCharm-da, həm də deploy edilmiş saytda işləyir.
-    """
     value = os.getenv(key, "")
     if value:
         return value
@@ -27,22 +22,18 @@ def get_secret(key: str, default: str = "") -> str:
         return default
 
 
-st.set_page_config(page_title="RoamPulse Pro", page_icon="✈️", layout="wide")
+st.set_page_config(page_title="CompassAI", page_icon="✈️", layout="wide")
 
 
 def inject_luxury_theme():
     """
-    ROAMPULSE EXPLORER — LÜKS DİZAYN MODULU
-    Tünd lacivərd fon + qızılı ton, arxa planda məşhur landmarkların incə
-    siluetləri, şüşə effektli kartlar. Kodun içindəki .main-title, .animated-card,
-    .leg-badge, .bounce-card, .status-box, .mobile-form-card klasları qorunub,
-    sadəcə rəng palitrası dəyişdirilib ki, aşağıdakı hissələrin heç biri qırılmasın.
+    CompassAI EXPLORER — LÜKS DİZAYN MODULU (YENİLƏNMİŞ)
+    Arxa fondakı naxışların brauzerdə dəqiq görünməsi üçün SVG kodu CSS-ə uyğun optimizasiya edildi.
     """
     st.markdown(
         """
         <style>
-        /* ============ FONTLAR ============ */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght=500;700;900&family=Poppins:wght=300;400;600;700&display=swap');
 
         html, body, [class*="css"] {
             font-family: 'Poppins', sans-serif;
@@ -53,20 +44,18 @@ def inject_luxury_theme():
             letter-spacing: 0.5px;
         }
 
-        /* ============ ARXA PLAN — TÜND LÜKS + SİLUET NAXIŞI ============ */
+        /* ============ ARXA PLAN YENİLƏNDİ ============ */
         .stApp {
             background-color: #0b1120;
-            background-image:
-                linear-gradient(180deg, rgba(11,17,32,0.94) 0%, rgba(15,23,42,0.97) 100%),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.4' opacity='0.16'%3E%3Cpath d='M60 300 L75 150 L85 150 L100 300 M65 220 L95 220 M70 180 L90 180 M80 150 L80 120 L80 100'/%3E%3Cpath d='M180 300 L220 210 L260 300 Z M195 300 L245 300'/%3E%3Cpath d='M330 300 L330 160 Q330 140 350 140 Q370 140 370 160 L370 300 M320 300 L380 300 M340 130 L360 130 L350 110 Z'/%3E%3Cpath d='M430 300 L430 230 Q430 190 460 180 Q490 190 490 230 L490 300 M420 300 L500 300 M460 180 L460 165'/%3E%3Cpath d='M530 300 L530 250 M510 250 L550 250 M515 230 L545 230 L530 210 Z M505 260 L555 260'/%3E%3C/g%3E%3C/svg%3E"),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.2' opacity='0.10'%3E%3Cpath d='M60 300 L75 150 L85 150 L100 300 M65 220 L95 220 M70 180 L90 180'/%3E%3Cpath d='M180 300 L220 210 L260 300 Z'/%3E%3Cpath d='M330 300 L330 160 Q330 140 350 140 Q370 140 370 160 L370 300'/%3E%3C/g%3E%3C/svg%3E");
-            background-repeat: repeat, repeat, repeat;
-            background-size: 600px 400px, 600px 400px, 900px 600px;
-            background-position: 0 0, 300px 200px, 150px 100px;
+            background-image: 
+                linear-gradient(180deg, rgba(11,17,32,0.92) 0%, rgba(15,23,42,0.96) 100%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.5' opacity='0.15'%3E%3Cpath d='M80 400 L110 180 L120 180 L150 400 M90 310 L140 310 M95 260 L135 260 M115 180 L115 140 L115 120'/%3E%3Cpath d='M250 400 L270 160 L310 165 L290 405 Z M255 340 L295 345 M260 280 L300 285 M265 220 L305 225'/%3E%3Cpath d='M380 400 L440 280 L500 400 Z M410 400 L440 280'/%3E%3Cpath d='M580 320 L590 260 L600 320 M575 290 L605 290 M590 260 L570 240 M590 260 L590 230 M590 260 L610 240'/%3E%3Cpath d='M680 400 L680 200 L710 200 L710 400 M680 230 L710 230 M695 215 A 6 6 0 1 1 695 214 M685 170 L705 170 L695 140 Z'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 800px 500px;
+            background-position: center top;
             background-attachment: fixed;
         }
 
-        /* ============ BAŞLIQ (main-title klası kodda istifadə olunur) ============ */
         .main-title {
             background: linear-gradient(45deg, #c9a24a, #f4e4bc);
             -webkit-background-clip: text;
@@ -78,7 +67,6 @@ def inject_luxury_theme():
 
         h2, h3, p, label, span, div { color: #e8e4da; }
 
-        /* ============ KARTLAR — ŞÜŞƏ EFFEKTİ ============ */
         .animated-card, .mobile-form-card {
             background: rgba(255,255,255,0.04);
             padding: 25px; border-radius: 16px;
@@ -101,15 +89,14 @@ def inject_luxury_theme():
             font-size: 13px; margin-bottom: 10px;
         }
 
-        /* ============ DÜYMƏLƏR ============ */
-        .stButton>button, .stFormSubmitButton > button {
+        .stButton>button, .stFormSubmitButton > button, .stDownloadButton>button {
             background: linear-gradient(135deg, #c9a24a 0%, #e8c874 50%, #c9a24a 100%);
             color: #0b1120 !important; border: none; border-radius: 10px;
             padding: 12px 28px; font-size: 16px; font-weight: 600;
             letter-spacing: 0.5px; transition: all 0.2s ease;
             box-shadow: 0 4px 14px rgba(201,162,74,0.3);
         }
-        .stButton>button:hover, .stFormSubmitButton > button:hover {
+        .stButton>button:hover, .stFormSubmitButton > button:hover, .stDownloadButton>button:hover {
             transform: translateY(-2px) scale(1.02);
             box-shadow: 0 8px 22px rgba(201,162,74,0.5);
         }
@@ -123,7 +110,6 @@ def inject_luxury_theme():
         .bounce-emoji { font-size: 42px; display: inline-block; animation: bounce 1.4s ease-in-out infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        /* ============ INPUT SAHƏLƏRİ ============ */
         .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"],
         .stDateInput input, .stTextArea textarea {
             background-color: rgba(255,255,255,0.06) !important;
@@ -132,33 +118,22 @@ def inject_luxury_theme():
             border-radius: 8px !important;
         }
 
-        /* ============ SIDEBAR ============ */
         section[data-testid="stSidebar"] {
             background: linear-gradient(180deg, #0f172a 0%, #0b1120 100%);
             border-right: 1px solid rgba(201,162,74,0.25);
         }
 
-        /* ============ METRIKLƏR ============ */
         div[data-testid="stMetric"] {
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(201,162,74,0.25);
             border-radius: 12px; padding: 12px;
         }
 
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #0b1120; }
-        ::-webkit-scrollbar-thumb { background: #c9a24a; border-radius: 5px; }
-
-        hr { border-color: rgba(201,162,74,0.3) !important; }
-
-        @media (max-width: 640px) {
-            .block-container { padding: 1rem 0.8rem 2rem; }
-            .main-title { font-size: 32px; line-height: 1.15; }
-            .subtitle-text { font-size: 14px; }
-            .mobile-form-card { padding: 16px; border-radius: 10px; }
-            .animated-card { padding: 16px; border-radius: 10px; }
-            .stButton>button { min-height: 48px; padding: 10px 14px; font-size: 15px; }
-            [data-testid="stMetric"] { overflow-wrap: anywhere; }
+        .chat-container {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(201,162,74,0.2);
+            border-radius: 12px; padding: 10px; margin-top: 15px;
+            max-height: 350px; overflow-y: auto;
         }
         </style>
         """,
@@ -172,7 +147,7 @@ DEFAULT_API_KEY = get_secret("GEMINI_API_KEY")
 
 LANG_DICT = {
     "AZ": {
-        "title": "✈️ RoamPulse Səyahət Portalı",
+        "title": "✈️ CompassAI",
         "subtitle": "Səyahət planınızı yaradın, canlı hava durumunu və otelləri anında saytda görün!",
         "settings": "⚙️ Tənzimləmələr",
         "options": "📋 Səyahət Parametrləri",
@@ -195,18 +170,13 @@ LANG_DICT = {
         "int_night": "Gecə Həyatı",
         "format": "📋 Hesabat Növü",
         "format_opt": ["Detallı Plan", "Qısa Xülasə"],
-        "security": "🔑 Təhlükəsizlik",
-        "api_placeholder": "Açarınızı bura daxil edin",
-        "api_saved_msg": "✅ Açar .env-dən avtomatik yükləndi",
         "btn_start": "🚀 Səyahət Planını Hazırla",
-        "err_missing": "❌ Zəhmət olmasa bütün şəhərləri və Gemini API açarını daxil edin!",
         "photo_cap": "📸 Möhtəşəm Məkan",
         "weather_title": "☀️ Canlı Hava Vəziyyəti",
         "weather_high": "Gözlənilən Ən Yüksək",
         "weather_low": "Gözlənilən Ən Aşağı",
         "weather_no_forecast": "ℹ️ Bu tarix üçün anlıq proqnoz yoxdur, mövsümi rejim aktivdir.",
         "geo_not_found": "⚠️ Bu şəhər tapılmadı, adı yoxlayıb yenidən cəhd edin.",
-        "expert_advice": "💡 Ekspert Mövsüm Tövsiyəsi",
         "budget_title": "📊 Günlük Təxmini Büdcə Bölgüsü (Ümumi)",
         "hotel": "🏨 Otel və Qalmaq",
         "food": "🍔 Yemək və Restoran",
@@ -222,14 +192,20 @@ LANG_DICT = {
         "spinner_weather": "🌦️ Hava məlumatları yüklənir...",
         "spinner_ai": "🤖 AI planınızı hazırlayır...",
         "leg_of_trip": "Marşrut hissəsi",
-        "api_key_not_found": "Gemini API key was not found on the server. Add GEMINI_API_KEY in Streamlit Cloud > App settings > Secrets.",
+        "api_key_not_found": "Gemini API key tapılmadı.",
         "currency_label": "💱 Valyuta",
         "azn_equivalent": "AZN-ə çevrilmiş",
         "rate_caption": "Məzənnə",
-        "rate_error": "⚠️ Məzənnə tapılmadı, AZN çevrilməsi göstərilmir."
+        "rate_error": "⚠️ Məzənnə tapılmadı.",
+        "chat_header": "💬 Canlı Səyahət Bələdçiniz",
+        "chat_placeholder": "Səyahət haqqında sual verin...",
+        "wa_button": "🟢 Planı WhatsApp-a Göndər (n8n)",
+        "wa_success": "🚀 Planınız WhatsApp-a uğurla göndərildi!",
+        "wa_error": "❌ WhatsApp-a göndərilərkən xəta baş verirdi.",
+        "wa_phone_label": "📞 WhatsApp Nömrəniz (Məs: +99450XXXXXXX)"
     },
     "EN": {
-        "title": "✈️ RoamPulse Travel Portal",
+        "title": "✈️ CompassAI",
         "subtitle": "Create your travel plan, see live weather and hotels instantly on the site!",
         "settings": "⚙️ Settings",
         "options": "📋 Travel Parameters",
@@ -252,19 +228,14 @@ LANG_DICT = {
         "int_night": "Nightlife",
         "format": "📋 Report Type",
         "format_opt": ["Detailed Plan", "Short Summary"],
-        "security": "🔑 Security",
-        "api_placeholder": "Enter your key here",
-        "api_saved_msg": "✅ Key auto-loaded from .env",
         "btn_start": "🚀 Prepare Travel Plan",
-        "err_missing": "❌ Please fill in all cities and the Gemini API key!",
         "photo_cap": "📸 Amazing Destination",
         "weather_title": "☀️ Live Weather Conditions",
         "weather_high": "Expected Max",
         "weather_low": "Expected Min",
         "weather_no_forecast": "ℹ️ No live forecast for this date, seasonal mode is active.",
-        "geo_not_found": "⚠️ City not found, please check the spelling and try again.",
-        "expert_advice": "💡 Expert Seasonal Advice",
-        "budget_title": "📊 Estimated Daily Budget Allocation (Overall)",
+        "geo_not_found": "⚠️ City not found.",
+        "budget_title": "📊 Estimated Daily Budget Allocation",
         "hotel": "🏨 Hotel & Stay",
         "food": "🍔 Food & Dining",
         "transport": "🚗 Transport & Leisure",
@@ -274,36 +245,36 @@ LANG_DICT = {
         "weather_delay": "⚠️ Temporary delay in weather data",
         "status_low": "🐣 Budget is BUDGET-FRIENDLY!",
         "status_mid": "🎈 Budget is MID-RANGE!",
-        "status_high": "🎉 Budget is GREAT! Enjoy luxury.",
-        "ai_role": "You are an energetic and cheerful AI Travel Guide. Provide your response in English with plenty of emojis.",
+        "status_high": "🎉 Budget is GREAT!",
+        "ai_role": "You are an AI Travel Guide. Provide response in English with emojis.",
         "spinner_weather": "🌦️ Loading weather data...",
         "spinner_ai": "🤖 AI is preparing your plan...",
         "leg_of_trip": "Trip leg",
-        "api_key_not_found": "Gemini API key was not found on the server. Add GEMINI_API_KEY in Streamlit Cloud > App settings > Secrets.",
+        "api_key_not_found": "Gemini API key not found.",
         "currency_label": "💱 Currency",
         "azn_equivalent": "Converted to AZN",
         "rate_caption": "Exchange rate",
-        "rate_error": "⚠️ Exchange rate not found, AZN conversion unavailable."
+        "rate_error": "⚠️ Exchange rate not found.",
+        "chat_header": "💬 Live Travel Assistant",
+        "chat_placeholder": "Ask something about your trip...",
+        "wa_button": "🟢 Send Plan to WhatsApp (n8n)",
+        "wa_success": "🚀 Plan successfully sent to WhatsApp!",
+        "wa_error": "❌ Error sending to WhatsApp.",
+        "wa_phone_label": "📞 Your WhatsApp Number (E.g.: +99450XXXXXXX)"
     }
 }
 
+
 def measure_time(func):
-    """
-    Öz yazdığımız dekorator: funksiyanın icra müddətini ölçüb sidebar-ın
-    altında kiçik bir caption kimi göstərir. Sillabusdakı 'Dekoratorlar'
-    mövzusunu göstərmək üçün əlavə edilib - @st.cache_data ilə birlikdə
-    stack olunaraq işləyir (əvvəlcə functools.wraps ilə orijinal funksiyanın
-    adı/metadatası qorunur, sonra əsl funksiya çağırılır və vaxt ölçülür).
-    """
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.perf_counter()
         result = func(*args, **kwargs)
         elapsed = time.perf_counter() - start
-        # Yalnız 10ms-dən çox çəkəndə göstəririk (keşlənmiş çağırışlar demək olar 0ms-dir)
         if elapsed > 0.01:
             st.caption(f"⏱️ `{func.__name__}` → {elapsed:.2f}s")
         return result
+
     return wrapper
 
 
@@ -336,7 +307,6 @@ CURRENCY_SYMBOLS = {"USD": "$", "EUR": "€", "GBP": "£", "AZN": "₼", "TRY": 
 @measure_time
 @st.cache_data(ttl=3600, show_spinner=False)
 def get_exchange_rate_to_azn(base_currency: str):
-    """Seçilmiş valyutadan 1 vahidin bugünkü AZN qarşılığını qaytarır. AZN seçilibsə 1.0 qaytarır."""
     if base_currency == "AZN":
         return 1.0
     url = f"https://open.er-api.com/v6/latest/{base_currency}"
@@ -358,9 +328,7 @@ def fun_status_card(emoji: str, text: str, color: str, text_color: str = "#fffff
 def seasonal_note(city_lower: str, travel_month: int):
     if "roma" in city_lower or "rome" in city_lower:
         if travel_month in [7, 8]:
-            return True, ("🔥 Roma yay aylarında (İyul-Avqust) həddindən artıq isti və boğucu olur. "
-                           "Gəzinti üçün əlverişli deyil. Alternativ olaraq Aprel-May və ya "
-                           "Sentyabr-Oktyabr aylarını tövsiyə edirik.")
+            return True, "🔥 Roma yayda həddindən artıq isti olur."
         return False, "✈️ Mövsüm Roma kəşfi üçün idealdır!"
     if "tokyo" in city_lower and travel_month in [3, 4]:
         return False, "🌸 Sakura dövrüdür! Möhtəşəm vaxt seçimi."
@@ -432,9 +400,12 @@ is_detailed = plan_format_idx == T["format_opt"][0]
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-# API key is loaded from local .env or Streamlit secrets without showing it in the UI.
-# This keeps the key out of screenshots and browser history.
 st.session_state["api_key"] = DEFAULT_API_KEY
+
+if "generated_plan_text" not in st.session_state:
+    st.session_state["generated_plan_text"] = ""
+if "route_summary_text" not in st.session_state:
+    st.session_state["route_summary_text"] = ""
 
 if st.button(T["btn_start"], use_container_width=True):
     legs = [{"city": leg["city"].strip().title(), "days": leg["days"]} for leg in st.session_state.legs]
@@ -520,11 +491,13 @@ if st.button(T["btn_start"], use_container_width=True):
                 f"→ {T['azn_equivalent']}: **{budget * rate_to_azn:,.2f} ₼**"
             )
 
+
         def fmt_amount(amount: float) -> str:
             text = f"{symbol}{amount:.2f}"
             if rate_to_azn:
                 text += f"  (≈ {amount * rate_to_azn:.2f} ₼)"
             return text
+
 
         daily_budget = budget / total_days
         hotel_share = daily_budget * 0.40
@@ -536,7 +509,6 @@ if st.button(T["btn_start"], use_container_width=True):
         col_b2.metric(T["food"], fmt_amount(food_share))
         col_b3.metric(T["transport"], fmt_amount(trans_share))
 
-        # Büdcə statusu valyutadan asılı olmayaraq düzgün işləsin deyə, müqayisəni AZN üzərindən aparırıq
         daily_budget_azn = daily_budget * rate_to_azn if rate_to_azn else daily_budget
 
         col_g1, col_g2 = st.columns([1, 2])
@@ -544,17 +516,21 @@ if st.button(T["btn_start"], use_container_width=True):
             with col_g1:
                 fun_status_card("🐣", "Econo-mode!", "#8B3A2A")
             with col_g2:
-                st.markdown(f'<div class="status-box" style="background:#8B3A2A;">{T["status_low"]}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="status-box" style="background:#8B3A2A;">{T["status_low"]}</div>',
+                            unsafe_allow_html=True)
         elif 120 <= daily_budget_azn <= 300:
             with col_g1:
                 fun_status_card("🎈", "Balanced!", "#c9a24a", text_color="#0b1120")
             with col_g2:
-                st.markdown(f'<div class="status-box" style="background:#c9a24a; color:#0b1120;">{T["status_mid"]}</div>', unsafe_allow_html=True)
+                st.markdown(
+                    f'<div class="status-box" style="background:#c9a24a; color:#0b1120;">{T["status_mid"]}</div>',
+                    unsafe_allow_html=True)
         else:
             with col_g1:
                 fun_status_card("🎉", "Luxury mode!", "#2E7D5B")
             with col_g2:
-                st.markdown(f'<div class="status-box" style="background:#2E7D5B;">{T["status_high"]}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="status-box" style="background:#2E7D5B;">{T["status_high"]}</div>',
+                            unsafe_allow_html=True)
 
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -574,20 +550,17 @@ if st.button(T["btn_start"], use_container_width=True):
         cd = travel_date
         for leg in legs:
             leg_end = cd + datetime.timedelta(days=leg["days"] - 1)
-            route_lines.append(f"- {leg['city']}: {cd.strftime('%d.%m.%Y')} - {leg_end.strftime('%d.%m.%Y')} ({leg['days']} gün)")
+            route_lines.append(
+                f"- {leg['city']}: {cd.strftime('%d.%m.%Y')} - {leg_end.strftime('%d.%m.%Y')} ({leg['days']} gün)")
             cd = leg_end + datetime.timedelta(days=1)
         route_description = "\n".join(route_lines)
+        st.session_state["route_summary_text"] = route_description
 
         alt_date_prompt = ""
         if any_bad_weather and weather_notes:
-            alt_date_prompt = (
-                "Həmçinin bəzi şəhərlər üçün hava/mövsüm baxımından qeydlər var: "
-                + " | ".join(weather_notes)
-                + " Zəhmət olmasa bunları nəzərə alaraq ayrıca bir başlıqda alternativ tövsiyələr ver."
-            )
+            alt_date_prompt = " Hava məsələlərinə diqqət et."
 
         budget_azn_note = f" (≈ {budget * rate_to_azn:,.2f} AZN)" if rate_to_azn else ""
-        cities_joined = "-".join(leg["city"] for leg in legs)
         ai_plan = None
 
         with st.spinner(T["spinner_ai"]):
@@ -596,36 +569,66 @@ if st.button(T["btn_start"], use_container_width=True):
 
                 prompt = f"""
                 {T['ai_role']}
-                Müştəri aşağıdakı ÇOXŞƏHƏRLİ marşrutla səyahət edəcək (ümumi {total_days} gün):
+                Müştəri marşrutu:
                 {route_description}
-
-                Ümumi Büdcə: {symbol}{budget} {currency}{budget_azn_note} (Tərz: {style}).
-                Günlük orta otel büdcəsi: {fmt_amount(hotel_share)}.
-                Müştərinin Xüsusi Maraq Dairələri: {interests_str}.
-
-                Zəhmət olmasa TƏK bir bitişik plan yaz: şəhərdən şəhərə keçid tövsiyələri
-                (məsələn qatar/təyyarə variantları) daxil olmaqla, hər şəhər üçün ayrıca başlıq aç və
-                o şəhərin günlərini ardıcıl olaraq planla (məs: "Gün 1-4: Tokio", "Gün 5-7: Osaka").
-                Hər şəhərdə maraqlara uyğun yerlər və otel/qalacaq yer tövsiyələri olsun.
-                {format_instruction}. {alt_date_prompt}
-                Markdown formatında, başlıqlarla struktura salınmış cavab ver.
+                Büdcə: {symbol}{budget} {currency}{budget_azn_note} (Tərz: {style}).
+                Maraqlar: {interests_str}.
+                {format_instruction}.{alt_date_prompt}
+                Markdown formatında yaz.
                 """
 
                 response = client.models.generate_content(model='gemini-2.5-flash', contents=prompt)
                 ai_plan = response.text
+                st.session_state["generated_plan_text"] = ai_plan
             except Exception as e:
                 st.error(f"{T['ai_error']}: {e}")
 
-        if ai_plan:
-            st.markdown("<div class='animated-card'>", unsafe_allow_html=True)
-            st.subheader(T["ai_title"])
-            st.markdown(ai_plan)
-            st.markdown("</div>", unsafe_allow_html=True)
+if st.session_state.get("generated_plan_text"):
+    st.markdown("<div class='animated-card'>", unsafe_allow_html=True)
+    st.subheader(T["ai_title"])
+    st.markdown(st.session_state["generated_plan_text"])
+    st.markdown("</div>", unsafe_allow_html=True)
 
-            st.download_button(
-                label=T["btn_download"],
-                data=ai_plan,
-                file_name=f"{cities_joined}_seyahat_plani.txt",
-                mime="text/plain",
-                use_container_width=True
-            )
+    cities_joined = "-".join(leg["city"] for leg in st.session_state.legs)
+    st.download_button(
+        label=T["btn_download"],
+        data=st.session_state["generated_plan_text"],
+        file_name=f"{cities_joined}_seyahat_plani.txt",
+        mime="text/plain",
+        use_container_width=True
+    )
+
+# ============ SIDEBAR - CANLI AI CHATBOT ============
+with st.sidebar:
+    st.markdown("---")
+    st.markdown(f"### {T['chat_header']}")
+
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+
+    if st.session_state.chat_history:
+        st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
+        for msg in st.session_state.chat_history:
+            role_emoji = "👤" if msg["role"] == "user" else "🤖"
+            st.markdown(f"**{role_emoji}**: {msg['content']}")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    if user_in := st.chat_input(T["chat_placeholder"], key="sidebar_chat_input"):
+        st.session_state.chat_history.append({"role": "user", "content": user_in})
+
+        if not st.session_state.get("api_key"):
+            st.warning(T["api_key_not_found"])
+        else:
+            try:
+                client = genai.Client(api_key=st.session_state.api_key)
+                context_route = st.session_state.get("route_summary_text", "Hələ plan qurulmayıb")
+                system_instruction = (
+                    f"{T['ai_role']} Sən hazırda bu marşrut üzrə kömək edirsən:\n{context_route}\n"
+                    "İstifadəçinin sualına qısa, şən və emojilərlə cavab ver."
+                )
+                chat_prompt = f"{system_instruction}\nİstifadəçi: {user_in}"
+                response = client.models.generate_content(model='gemini-2.5-flash', contents=chat_prompt)
+                st.session_state.chat_history.append({"role": "assistant", "content": response.text})
+                st.rerun()
+            except Exception as e:
+                st.sidebar.error(f"Chat Error: {e}")
