@@ -1,5 +1,0 @@
-streamlit
-google-genai
-requests
-python-dotenv
-weasyprint
