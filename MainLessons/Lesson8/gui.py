@@ -340,38 +340,50 @@ def generate_luxury_pdf(plan_text, route, budget):
     pdf = FPDF()
     pdf.add_page()
 
-    # Azərbaycan şriftini (Dejavu Sans) birbaşa vebdən yükləyirik ki, Linux-da kvadrat çıxmasın
+    # Azərbaycan şriftini birbaşa vebdən təmiz yükləyirik
     font_url = "https://raw.githubusercontent.com/reingart/pyfpdf/master/fpdf/font/DejaVuSans.ttf"
     font_path = "DejaVuSans.ttf"
-    try:
-        urllib.request.urlretrieve(font_url, font_path)
-        pdf.add_font("DejaVu", "", font_path, uni=True)
-        pdf.set_font("DejaVu", size=12)
-    except:
-        # Əgər internetdə problem olarsa, standart şriftə keçsin
-        pdf.set_font("Arial", size=12)
 
-    # Başlıq hissəsi
+    # Şrift faylı yoxdursa endiririk
+    if not os.path.exists(font_path):
+        try:
+            urllib.request.urlretrieve(font_url, font_path)
+        except Exception as e:
+            print(f"Şrift yüklənərkən xəta: {e}")
+
+    # Şrifti FPDF-ə qeydiyyatdan keçiririk
+    if os.path.exists(font_path):
+        pdf.add_font("DejaVu", "", font_path)
+        pdf.set_font("DejaVu", size=12)  # Bütün sənəd üçün DejaVu aktiv olur
+    else:
+        pdf.set_font("Helvetica", size=12)  # İnternet kəsilsə standart şriftə keçsin
+
+    # 1. Başlıq hissəsi
     pdf.set_text_color(201, 162, 74)  # Lüks qızılı rəng
-    pdf.cell(200, 10, txt="CompassAI — Eksklüziv Səyahət Planı", ln=True, align='C')
+    pdf.cell(190, 10, txt="CompassAI — Eksklüziv Səyahət Planı", ln=True, align='C')
     pdf.ln(10)
 
-    # Məlumat paneli
-    pdf.set_text_color(34, 34, 34)
-    pdf.cell(200, 8, txt=f"Marşrut: {route}", ln=True)
-    pdf.cell(200, 8, txt=f"Ümumi Büdcə: {budget}", ln=True)
-    pdf.cell(200, 8, txt=f"Yaradılma Tarixi: {datetime.date.today().strftime('%d.%m.%Y')}", ln=True)
+    # 2. Məlumat paneli
+    pdf.set_text_color(34, 34, 34)  # Tünd boz rəng
+    pdf.cell(190, 8, txt=f"Marşrut: {route}", ln=True)
+    pdf.cell(190, 8, txt=f"Ümumi Büdcə: {budget}", ln=True)
+    pdf.cell(190, 8, txt=f"Yaradılma Tarixi: {datetime.date.today().strftime('%d.%m.%Y')}", ln=True)
     pdf.ln(10)
 
-    # Səyahət planının mətni
+    # 3. Səyahət planının mətni
     for line in plan_text.split('\n'):
-        clean_line = line.replace("**", "")  # Ulduzları təmizləyirik
-        if clean_line.strip().startswith('#'):
-            pdf.set_text_color(201, 162, 74)
-            pdf.cell(200, 10, txt=clean_line.lstrip('#').strip(), ln=True)
+        clean_line = line.replace("**", "").strip()  # Ulduzları təmizləyirik
+        if not clean_line:
+            pdf.ln(4)
+            continue
+
+        if clean_line.startswith('#'):
+            pdf.set_text_color(201, 162, 74)  # Başlıqlar qızılı olsun
+            pdf.cell(190, 10, txt=clean_line.lstrip('#').strip(), ln=True)
             pdf.set_text_color(34, 34, 34)
         else:
-            pdf.multi_cell(0, 8, txt=clean_line)
+            # multi_cell Azərbaycan hərflərini və uzun sətirləri avtomatik alt-alta salır
+            pdf.multi_cell(0, 7, txt=clean_line)
 
     # PDF-i yaddaşa yazırıq
     output = io.BytesIO()
