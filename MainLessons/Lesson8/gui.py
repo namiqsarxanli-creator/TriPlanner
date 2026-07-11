@@ -8,12 +8,7 @@ from functools import wraps
 from urllib.parse import quote
 from dotenv import load_dotenv
 import io
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib import colors
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
+from weasyprint import HTML
 
 ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 load_dotenv(dotenv_path=ENV_PATH)
@@ -341,82 +336,15 @@ def seasonal_note(city_lower: str, travel_month: int):
 
 
 def generate_luxury_pdf(plan_text, route, budget):
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(
-        buffer, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40
-    )
-    story = []
-
-    # ========================================================
-    # AZƏRBAYCAN ŞRİFTİNİN (ARIAL) QEYDİYYATDAN KEÇİRİLMƏSİ
-    # ========================================================
-    try:
-        # Windows-dakı standart Arial şriftlərini PDF-ə bağlayırıq
-        pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf'))
-        pdfmetrics.registerFont(TTFont('Arial-Bold', 'arialbd.ttf'))
-        pdf_font = 'Arial'
-        pdf_font_bold = 'Arial-Bold'
-    except Exception:
-        # Əgər hər hansı səbəbdən sistemdə tapılmazsa, standart rejimə qayıtsın
-        pdf_font = 'Helvetica'
-        pdf_font_bold = 'Helvetica-Bold'
-
-    styles = getSampleStyleSheet()
-
-    title_style = ParagraphStyle(
-        'LuxuryTitle',
-        parent=styles['Heading1'],
-        fontName=pdf_font_bold,  # Yeniləndi
-        fontSize=24,
-        textColor=colors.HexColor('#c9a24a'),
-        spaceAfter=15,
-        alignment=1,
-    )
-
-    body_style = ParagraphStyle(
-        'LuxuryBody',
-        parent=styles['Normal'],
-        fontName=pdf_font,  # Yeniləndi
-        fontSize=10,
-        textColor=colors.HexColor('#222222'),
-        leading=15,  # Oxunurluq üçün sətir arası bir az artırıldı
-        spaceAfter=10,
-    )
-
-    # Başlıq
-    story.append(Paragraph("CompassAI — Eksklüziv Səyahət Planı", title_style))
-    story.append(Spacer(1, 15))
-
-    # Parametrlər cədvəli
-    meta_data = [
-        [Paragraph(f"<b>Marşrut:</b> {route}", body_style)],
-        [Paragraph(f"<b>Ümumi Büdcə:</b> {budget}", body_style)],
-        [
-            Paragraph(
-                f"<b>Yaradılma Tarixi:</b> {datetime.date.today().strftime('%d.%m.%Y')}",
-                body_style,
-            )
-        ],
-    ]
-    meta_table = Table(meta_data, colWidths=[500])
-    meta_table.setStyle(
-        TableStyle([
-            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#f4e4bc')),
-            ('PADDING', (0, 0), (-1, -1), 12),
-            ('BOX', (0, 0), (-1, -1), 1.5, colors.HexColor('#c9a24a')),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ])
-    )
-    story.append(meta_table)
-    story.append(Spacer(1, 20))
-
-    # Əsas AI Plan Mətni
+    # Markdown formatındakı başlıqları və ulduzcuqları HTML teqlərinə çeviririk
+    html_content = ""
     for line in plan_text.split('\n'):
         line = line.strip()
         if not line:
-            story.append(Spacer(1, 6))
+            html_content += "<br>"
             continue
 
+        # **qalın** mətnləri <b> teqinə çeviririk
         clean_line = ""
         parts = line.split("**")
         for idx, part in enumerate(parts):
@@ -425,15 +353,88 @@ def generate_luxury_pdf(plan_text, route, budget):
             else:
                 clean_line += part
 
+        # Başlıqları (#) tapırıq
         if clean_line.startswith('#'):
             header_text = clean_line.lstrip('#').strip()
-            clean_line = f"<font color='#c9a24a'><b>{header_text}</b></font>"
+            html_content += f"<h2>{header_text}</h2>"
+        else:
+            html_content += f"<p>{clean_line}</p>"
 
-        clean_line = clean_line.replace('&', '&amp;')
+    # Müasir və lüks dizaynlı HTML şablonu (Azərbaycan şriftləri üçün tam dəstəkli)
+    html_template = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            @page {{
+                size: A4;
+                margin: 20mm 15mm;
+                background-color: #ffffff;
+            }}
+            body {{
+                font-family: 'Segoe UI', Arial, sans-serif;
+                color: #222222;
+                line-height: 1.6;
+                font-size: 11pt;
+                margin: 0;
+                padding: 0;
+            }}
+            .title {{
+                color: #c9a24a;
+                text-align: center;
+                font-size: 24pt;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }}
+            .meta-box {{
+                background-color: #fcf8ee;
+                border: 1.5px solid #c9a24a;
+                padding: 15px;
+                margin-top: 20px;
+                margin-bottom: 25px;
+                border-radius: 4px;
+            }}
+            .meta-box p {{
+                margin: 5px 0;
+                font-size: 11pt;
+            }}
+            h2 {{
+                color: #c9a24a;
+                font-size: 14pt;
+                border-left: 4px solid #c9a24a;
+                padding-left: 10px;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }}
+            p {{
+                margin: 0 0 8px 0;
+                text-align: justify;
+            }}
+            b {{
+                color: #111111;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="title">CompassAI — Eksklüziv Səyahət Planı</div>
 
-        story.append(Paragraph(clean_line, body_style))
+        <div class="meta-box">
+            <p><b>Marşrut:</b> {route}</p>
+            <p><b>Ümumi Büdcə:</b> {budget}</p>
+            <p><b>Yaradılma Tarixi:</b> {datetime.date.today().strftime('%d.%m.%Y')}</p>
+        </div>
 
-    doc.build(story)
+        <div class="content">
+            {html_content}
+        </div>
+    </body>
+    </html>
+    """
+
+    # PDF generasiyası
+    buffer = io.BytesIO()
+    HTML(string=html_template).write_pdf(buffer)
     buffer.seek(0)
     return buffer
 
