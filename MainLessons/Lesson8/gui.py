@@ -7,6 +7,13 @@ import time
 from functools import wraps
 from urllib.parse import quote
 from dotenv import load_dotenv
+import io
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 load_dotenv(dotenv_path=ENV_PATH)
@@ -44,16 +51,22 @@ def inject_luxury_theme():
             letter-spacing: 0.5px;
         }
 
-        /* ============ ARXA PLAN YENİLƏNDİ ============ */
-        .stApp {
-            background-color: #0b1120;
-            background-image: 
-                linear-gradient(180deg, rgba(11,17,32,0.92) 0%, rgba(15,23,42,0.96) 100%),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.5' opacity='0.15'%3E%3Cpath d='M80 400 L110 180 L120 180 L150 400 M90 310 L140 310 M95 260 L135 260 M115 180 L115 140 L115 120'/%3E%3Cpath d='M250 400 L270 160 L310 165 L290 405 Z M255 340 L295 345 M260 280 L300 285 M265 220 L305 225'/%3E%3Cpath d='M380 400 L440 280 L500 400 Z M410 400 L440 280'/%3E%3Cpath d='M580 320 L590 260 L600 320 M575 290 L605 290 M590 260 L570 240 M590 260 L590 230 M590 260 L610 240'/%3E%3Cpath d='M680 400 L680 200 L710 200 L710 400 M680 230 L710 230 M695 215 A 6 6 0 1 1 695 214 M685 170 L705 170 L695 140 Z'/%3E%3C/g%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: 800px 500px;
-            background-position: center top;
-            background-attachment: fixed;
+        .stApp,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stMain"],
+        .main {
+            background-color: #0b1120 !important;
+            background-image:
+                linear-gradient(180deg, rgba(11,17,32,0.88) 0%, rgba(15,23,42,0.93) 100%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='420' viewBox='0 0 700 420'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-width='1.7' opacity='0.32' stroke-linejoin='round' stroke-linecap='round'%3E%3C!-- Eyfel qulesi --%3E%3Cpath d='M60 380 L95 150 L105 150 L140 380 M68 300 L132 300 M75 240 L125 240 M95 150 L95 110 L105 110 L105 150 M100 110 L100 85'/%3E%3C!-- Misir piramidasi --%3E%3Cpath d='M195 380 L245 240 L295 380 Z M210 380 L280 380'/%3E%3C!-- Big Ben qullesi --%3E%3Cpath d='M355 380 L355 190 Q355 165 380 165 Q405 165 405 190 L405 380 M345 380 L415 380 M365 200 L395 200 M365 230 L395 230 M365 260 L395 260 M370 165 L370 145 L390 145 L390 165'/%3E%3C!-- Tac Mahal gunbezi --%3E%3Cpath d='M465 380 L465 280 Q465 225 505 210 Q545 225 545 280 L545 380 M450 380 L560 380 M505 210 L505 185 M495 185 L515 185 M475 300 L475 380 M535 300 L535 380'/%3E%3C!-- Pagoda --%3E%3Cpath d='M600 380 L600 320 M575 320 L625 320 M580 300 L620 300 L600 275 Z M585 270 L615 270 L600 250 Z M568 330 L632 330'/%3E%3C/g%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat, repeat !important;
+            background-size: cover, 700px 420px !important;
+            background-position: center top, 0 0 !important;
+            background-attachment: fixed, fixed !important;
+        }
+
+        [data-testid="stHeader"] {
+            background-color: transparent !important;
         }
 
         .main-title {
@@ -176,7 +189,7 @@ LANG_DICT = {
         "weather_high": "Gözlənilən Ən Yüksək",
         "weather_low": "Gözlənilən Ən Aşağı",
         "weather_no_forecast": "ℹ️ Bu tarix üçün anlıq proqnoz yoxdur, mövsümi rejim aktivdir.",
-        "geo_not_found": "⚠️ Bu şəhər tapılmadı, adı yoxlayıb yenidən cəhd edin.",
+        "geo_not_found": "🧭 Point Me uğursuz oldu! Bu şəhər tapılmadı, adı yoxlayıb yenidən cəhd edin.",
         "budget_title": "📊 Günlük Təxmini Büdcə Bölgüsü (Ümumi)",
         "hotel": "🏨 Otel və Qalmaq",
         "food": "🍔 Yemək və Restoran",
@@ -185,12 +198,12 @@ LANG_DICT = {
         "btn_download": "📥 Planı Yüklə",
         "ai_error": "💥 Süni İntellekt xətti məşğuldur",
         "weather_delay": "⚠️ Hava məlumatlarında fasilə yarandı",
-        "status_low": "🐣 Büdcə EKONOMDUR! Qənaətli səyahət.",
-        "status_mid": "🎈 Büdcə ORTADIR! Balanslı və rahat.",
-        "status_high": "🎉 Büdcə YAXŞIDIR! Rahat və lüks səyahət edə bilərsiniz.",
+        "status_low": "🐣 Reparo! Büdcə EKONOMDUR — qənaətli tərzdə bərpa edildi.",
+        "status_mid": "🎈 Wingardium Leviosa! Büdcə ORTADIR — balanslı və rahat uçuş.",
+        "status_high": "🎉 Expecto Patronum! Büdcə YAXŞIDIR — lüks qoruyucunuz aktivdir.",
         "ai_role": "Sən enerjili və şən AI Səyahət Bələdçisisən. Azərbaycan dilində emojilərlə bol cavab ver.",
-        "spinner_weather": "🌦️ Hava məlumatları yüklənir...",
-        "spinner_ai": "🤖 AI planınızı hazırlayır...",
+        "spinner_weather": "🛡️ Protego! Hava ruhları araşdırılır...",
+        "spinner_ai": "🪄 Accio Marşrut! Planınız çağırılır...",
         "leg_of_trip": "Marşrut hissəsi",
         "api_key_not_found": "Gemini API key tapılmadı.",
         "currency_label": "💱 Valyuta",
@@ -198,11 +211,7 @@ LANG_DICT = {
         "rate_caption": "Məzənnə",
         "rate_error": "⚠️ Məzənnə tapılmadı.",
         "chat_header": "💬 Canlı Səyahət Bələdçiniz",
-        "chat_placeholder": "Səyahət haqqında sual verin...",
-        "wa_button": "🟢 Planı WhatsApp-a Göndər (n8n)",
-        "wa_success": "🚀 Planınız WhatsApp-a uğurla göndərildi!",
-        "wa_error": "❌ WhatsApp-a göndərilərkən xəta baş verirdi.",
-        "wa_phone_label": "📞 WhatsApp Nömrəniz (Məs: +99450XXXXXXX)"
+        "chat_placeholder": "Səyahət haqqında sual verin..."
     },
     "EN": {
         "title": "✈️ CompassAI",
@@ -234,7 +243,7 @@ LANG_DICT = {
         "weather_high": "Expected Max",
         "weather_low": "Expected Min",
         "weather_no_forecast": "ℹ️ No live forecast for this date, seasonal mode is active.",
-        "geo_not_found": "⚠️ City not found.",
+        "geo_not_found": "🧭 Point Me failed! City not found.",
         "budget_title": "📊 Estimated Daily Budget Allocation",
         "hotel": "🏨 Hotel & Stay",
         "food": "🍔 Food & Dining",
@@ -243,12 +252,12 @@ LANG_DICT = {
         "btn_download": "📥 Download Plan",
         "ai_error": "💥 AI Line is busy",
         "weather_delay": "⚠️ Temporary delay in weather data",
-        "status_low": "🐣 Budget is BUDGET-FRIENDLY!",
-        "status_mid": "🎈 Budget is MID-RANGE!",
-        "status_high": "🎉 Budget is GREAT!",
+        "status_low": "🐣 Reparo! Budget is BUDGET-FRIENDLY — patched up and thrifty.",
+        "status_mid": "🎈 Wingardium Leviosa! Budget is MID-RANGE — a balanced flight.",
+        "status_high": "🎉 Expecto Patronum! Budget is GREAT — your luxury shield is up.",
         "ai_role": "You are an AI Travel Guide. Provide response in English with emojis.",
-        "spinner_weather": "🌦️ Loading weather data...",
-        "spinner_ai": "🤖 AI is preparing your plan...",
+        "spinner_weather": "🛡️ Protego! Scouting the weather spirits...",
+        "spinner_ai": "🪄 Accio Route! Summoning your plan...",
         "leg_of_trip": "Trip leg",
         "api_key_not_found": "Gemini API key not found.",
         "currency_label": "💱 Currency",
@@ -256,11 +265,7 @@ LANG_DICT = {
         "rate_caption": "Exchange rate",
         "rate_error": "⚠️ Exchange rate not found.",
         "chat_header": "💬 Live Travel Assistant",
-        "chat_placeholder": "Ask something about your trip...",
-        "wa_button": "🟢 Send Plan to WhatsApp (n8n)",
-        "wa_success": "🚀 Plan successfully sent to WhatsApp!",
-        "wa_error": "❌ Error sending to WhatsApp.",
-        "wa_phone_label": "📞 Your WhatsApp Number (E.g.: +99450XXXXXXX)"
+        "chat_placeholder": "Ask something about your trip..."
     }
 }
 
@@ -328,12 +333,109 @@ def fun_status_card(emoji: str, text: str, color: str, text_color: str = "#fffff
 def seasonal_note(city_lower: str, travel_month: int):
     if "roma" in city_lower or "rome" in city_lower:
         if travel_month in [7, 8]:
-            return True, "🔥 Roma yayda həddindən artıq isti olur."
+            return True, "🔥 Aguamenti belə kömək etməz — Roma yayda həddindən artıq isti olur."
         return False, "✈️ Mövsüm Roma kəşfi üçün idealdır!"
     if "tokyo" in city_lower and travel_month in [3, 4]:
         return False, "🌸 Sakura dövrüdür! Möhtəşəm vaxt seçimi."
     return False, "✈️ Seçdiyiniz dövr səyahət üçün uyğundur!"
 
+
+def generate_luxury_pdf(plan_text, route, budget):
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40
+    )
+    story = []
+
+    # ========================================================
+    # AZƏRBAYCAN ŞRİFTİNİN (ARIAL) QEYDİYYATDAN KEÇİRİLMƏSİ
+    # ========================================================
+    try:
+        # Windows-dakı standart Arial şriftlərini PDF-ə bağlayırıq
+        pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf'))
+        pdfmetrics.registerFont(TTFont('Arial-Bold', 'arialbd.ttf'))
+        pdf_font = 'Arial'
+        pdf_font_bold = 'Arial-Bold'
+    except Exception:
+        # Əgər hər hansı səbəbdən sistemdə tapılmazsa, standart rejimə qayıtsın
+        pdf_font = 'Helvetica'
+        pdf_font_bold = 'Helvetica-Bold'
+
+    styles = getSampleStyleSheet()
+
+    title_style = ParagraphStyle(
+        'LuxuryTitle',
+        parent=styles['Heading1'],
+        fontName=pdf_font_bold,  # Yeniləndi
+        fontSize=24,
+        textColor=colors.HexColor('#c9a24a'),
+        spaceAfter=15,
+        alignment=1,
+    )
+
+    body_style = ParagraphStyle(
+        'LuxuryBody',
+        parent=styles['Normal'],
+        fontName=pdf_font,  # Yeniləndi
+        fontSize=10,
+        textColor=colors.HexColor('#222222'),
+        leading=15,  # Oxunurluq üçün sətir arası bir az artırıldı
+        spaceAfter=10,
+    )
+
+    # Başlıq
+    story.append(Paragraph("CompassAI — Eksklüziv Səyahət Planı", title_style))
+    story.append(Spacer(1, 15))
+
+    # Parametrlər cədvəli
+    meta_data = [
+        [Paragraph(f"<b>Marşrut:</b> {route}", body_style)],
+        [Paragraph(f"<b>Ümumi Büdcə:</b> {budget}", body_style)],
+        [
+            Paragraph(
+                f"<b>Yaradılma Tarixi:</b> {datetime.date.today().strftime('%d.%m.%Y')}",
+                body_style,
+            )
+        ],
+    ]
+    meta_table = Table(meta_data, colWidths=[500])
+    meta_table.setStyle(
+        TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#f4e4bc')),
+            ('PADDING', (0, 0), (-1, -1), 12),
+            ('BOX', (0, 0), (-1, -1), 1.5, colors.HexColor('#c9a24a')),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ])
+    )
+    story.append(meta_table)
+    story.append(Spacer(1, 20))
+
+    # Əsas AI Plan Mətni
+    for line in plan_text.split('\n'):
+        line = line.strip()
+        if not line:
+            story.append(Spacer(1, 6))
+            continue
+
+        clean_line = ""
+        parts = line.split("**")
+        for idx, part in enumerate(parts):
+            if idx % 2 == 1:
+                clean_line += f"<b>{part}</b>"
+            else:
+                clean_line += part
+
+        if clean_line.startswith('#'):
+            header_text = clean_line.lstrip('#').strip()
+            clean_line = f"<font color='#c9a24a'><b>{header_text}</b></font>"
+
+        clean_line = clean_line.replace('&', '&amp;')
+
+        story.append(Paragraph(clean_line, body_style))
+
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
 
 with st.sidebar:
     st.markdown("<h2 style='color:#c9a24a; margin-bottom:0;'>⚙️ Tənzimləmələr</h2>", unsafe_allow_html=True)
@@ -437,6 +539,40 @@ if st.button(T["btn_start"], use_container_width=True):
 
             img_url = f"https://loremflickr.com/1000/350/{quote(city)},travel,landmark/all"
             st.image(img_url, caption=f"{T['photo_cap']}: {city}", use_container_width=True)
+
+            # ============ TƏCİLİ MƏLUMAT KARTI ============
+            st.markdown("#### 🚨 Təcili Məlumat və Qaydalar")
+
+            # Şəhərə görə statik baza məlumatları təyin edirik (Genişləndirilə bilər)
+            city_upper = city.upper()
+            emergency_no = "112"
+            visa_info = "AI tərəfindən yoxlanılır..."
+            timezone = "UTC+1"
+
+            if "PARIS" in city_upper:
+                emergency_no = "112 (Ümumi), 15 (Təcili Yardım)"
+                visa_info = "Şengen vizası tələb olunur (Azərbaycan vətəndaşları üçün)."
+                timezone = "Paris (GMT+2)"
+            elif "TOKYO" in city_upper:
+                emergency_no = "119 (Yanğın/Təcili), 110 (Polis)"
+                visa_info = "Viza tələb olunur. Səfirlikdən öncədən alınmalıdır."
+                timezone = "Tokyo (GMT+9)"
+            elif "ROMA" in city_upper or "ROME" in city_upper:
+                emergency_no = "112 (Ümumi Polis və Tibb)"
+                visa_info = "Şengen vizası tələb olunur."
+                timezone = "Roma (GMT+2)"
+            else:
+                visa_info = "Giriş qaydalarını yoxlamaq üçün AI bələdçinizə müraciət edin."
+                timezone = "Yerli vaxt zolağı"
+
+            # Vizual Kart Dizaynı
+            st.markdown(f"""
+                            <div style="background: rgba(201,162,74,0.08); border-left: 5px solid #c9a24a; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                                <p style="margin: 0 0 8px 0;"><b>📞 Təcili Nömrələr:</b> {emergency_no}</p>
+                                <p style="margin: 0 0 8px 0;"><b>🌍 Vaxt Zolağı:</b> {timezone}</p>
+                                <p style="margin: 0;"><b>🛂 Viza Tələbi:</b> {visa_info}</p>
+                            </div>
+                        """, unsafe_allow_html=True)
 
             with st.spinner(T["spinner_weather"]):
                 try:
@@ -590,15 +726,24 @@ if st.session_state.get("generated_plan_text"):
     st.markdown("</div>", unsafe_allow_html=True)
 
     cities_joined = "-".join(leg["city"] for leg in st.session_state.legs)
+    cities_joined = "-".join(leg["city"] for leg in st.session_state.legs)
+
+    # PDF generation
+    pdf_data = generate_luxury_pdf(
+        st.session_state["generated_plan_text"],
+        st.session_state.get("route_summary_text", ""),
+        f"{budget} {currency}"
+    )
+
     st.download_button(
-        label=T["btn_download"],
-        data=st.session_state["generated_plan_text"],
-        file_name=f"{cities_joined}_seyahat_plani.txt",
-        mime="text/plain",
+        label="📥 Eksklüziv PDF Planı Yüklə",
+        data=pdf_data,
+        file_name=f"{cities_joined}_luxury_plan.pdf",
+        mime="application/pdf",
         use_container_width=True
     )
 
-# ============ SIDEBAR - CANLI AI CHATBOT ============
+
 with st.sidebar:
     st.markdown("---")
     st.markdown(f"### {T['chat_header']}")
