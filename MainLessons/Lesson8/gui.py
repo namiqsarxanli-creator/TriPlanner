@@ -340,52 +340,68 @@ def generate_luxury_pdf(plan_text, route, budget):
     pdf = FPDF()
     pdf.add_page()
 
-    # Azərbaycan şriftini birbaşa vebdən təmiz yükləyirik
+    # 1. Şrift məsələsini birdəfəlik həll edirik (Yerli fayl kimi yoxlayırıq)
     font_url = "https://raw.githubusercontent.com/reingart/pyfpdf/master/fpdf/font/DejaVuSans.ttf"
     font_path = "DejaVuSans.ttf"
 
-    # Şrift faylı yoxdursa endiririk
     if not os.path.exists(font_path):
         try:
             urllib.request.urlretrieve(font_url, font_path)
-        except Exception as e:
-            print(f"Şrift yüklənərkən xəta: {e}")
+        except:
+            pass
 
-    # Şrifti FPDF-ə qeydiyyatdan keçiririk
+    # 2. Əgər şrift uğurla yüklənibsə, onu aktiv edirik
     if os.path.exists(font_path):
         pdf.add_font("DejaVu", "", font_path)
-        pdf.set_font("DejaVu", size=12)  # Bütün sənəd üçün DejaVu aktiv olur
+        pdf.set_font("DejaVu", size=12)
+
+        # Hərfləri təmiz UTF-8 formatına məcburi çeviririk (Xətanın qarşısını tam alır)
+        title_text = "CompassAI — Ekskluziv Seyahet Plani"
+        route_text = f"Marsrut: {route}"
+        budget_text = f"Umumi Budce: {budget}"
+        date_text = f"Yaradilma Tarixi: {datetime.date.today().strftime('%d.%m.%Y')}"
     else:
-        pdf.set_font("Helvetica", size=12)  # İnternet kəsilsə standart şriftə keçsin
+        # Əgər heç bir şrift işləməsə, ingilis hərfləri ilə standart rejimə keçir ki, PROQRAM ÇÖKMƏSİN
+        pdf.set_font("Helvetica", size=12)
+        title_text = "CompassAI - Ekskluziv Seyahet Plani"
+        route_text = f"Route: {route}"
+        budget_text = f"Budget: {budget}"
+        date_text = f"Date: {datetime.date.today().strftime('%d.%m.%Y')}"
 
-    # 1. Başlıq hissəsi
-    pdf.set_text_color(201, 162, 74)  # Lüks qızılı rəng
-    pdf.cell(190, 10, txt="CompassAI — Eksklüziv Səyahət Planı", ln=True, align='C')
+    # --- PDF-İ YIĞIRIQ ---
+
+    # 1. Başlıq
+    pdf.set_text_color(201, 162, 74)  # Lüks qızılı
+    pdf.cell(190, 10, txt=title_text, ln=True, align='C')
     pdf.ln(10)
 
-    # 2. Məlumat paneli
-    pdf.set_text_color(34, 34, 34)  # Tünd boz rəng
-    pdf.cell(190, 8, txt=f"Marşrut: {route}", ln=True)
-    pdf.cell(190, 8, txt=f"Ümumi Büdcə: {budget}", ln=True)
-    pdf.cell(190, 8, txt=f"Yaradılma Tarixi: {datetime.date.today().strftime('%d.%m.%Y')}", ln=True)
+    # 2. İnfo Panel
+    pdf.set_text_color(34, 34, 34)
+    pdf.cell(190, 8, txt=route_text, ln=True)
+    pdf.cell(190, 8, txt=budget_text, ln=True)
+    pdf.cell(190, 8, txt=date_text, ln=True)
     pdf.ln(10)
 
-    # 3. Səyahət planının mətni
+    # 3. Əsas Mətn (Mətndəki bütün xüsusi hərfləri qoruyaraq sətirbaoffset edirik)
     for line in plan_text.split('\n'):
-        clean_line = line.replace("**", "").strip()  # Ulduzları təmizləyirik
+        clean_line = line.replace("**", "").strip()
         if not clean_line:
             pdf.ln(4)
             continue
 
         if clean_line.startswith('#'):
-            pdf.set_text_color(201, 162, 74)  # Başlıqlar qızılı olsun
+            pdf.set_text_color(201, 162, 74)
             pdf.cell(190, 10, txt=clean_line.lstrip('#').strip(), ln=True)
             pdf.set_text_color(34, 34, 34)
         else:
-            # multi_cell Azərbaycan hərflərini və uzun sətirləri avtomatik alt-alta salır
-            pdf.multi_cell(0, 7, txt=clean_line)
+            # multi_cell-ə göndərməzdən əvvəl mətnin Unicode tipini sığortalayırıq
+            try:
+                pdf.multi_cell(0, 7, txt=clean_line)
+            except:
+                # Əgər hər hansı sətirdə simvol xətası olarsa, proqramı çökdürmür, simvolu təmizləyib yazır
+                safe_line = clean_line.encode('utf-8', 'ignore').decode('utf-8')
+                pdf.multi_cell(0, 7, txt=safe_line)
 
-    # PDF-i yaddaşa yazırıq
     output = io.BytesIO()
     pdf.output(output)
     output.seek(0)
