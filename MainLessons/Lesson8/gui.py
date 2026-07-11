@@ -8,8 +8,7 @@ from functools import wraps
 from urllib.parse import quote
 from dotenv import load_dotenv
 import io
-from fpdf import FPDF
-import urllib.request
+
 
 ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 load_dotenv(dotenv_path=ENV_PATH)
@@ -336,76 +335,26 @@ def seasonal_note(city_lower: str, travel_month: int):
     return False, "✈️ Seçdiyiniz dövr səyahət üçün uyğundur!"
 
 
-def generate_luxury_pdf(plan_text, route, budget):
-    pdf = FPDF()
-    pdf.add_page()
+def generate_text_file(plan_text, route, budget):
+    """Səyahət planını təmiz yazı faylı (.txt) formatına salır"""
+    output = io.StringIO()
 
-    # 1. Şrift məsələsini birdəfəlik həll edirik (Yerli fayl kimi yoxlayırıq)
-    font_url = "https://raw.githubusercontent.com/reingart/pyfpdf/master/fpdf/font/DejaVuSans.ttf"
-    font_path = "DejaVuSans.ttf"
+    output.write("=========================================\n")
+    output.write("   CompassAI — EKSKLÜZİV SƏYAHƏT PLANI   \n")
+    output.write("=========================================\n\n")
 
-    if not os.path.exists(font_path):
-        try:
-            urllib.request.urlretrieve(font_url, font_path)
-        except:
-            pass
+    output.write(f"Marşrut: {route}\n")
+    output.write(f"Ümumi Büdcə: {budget}\n")
+    output.write(f"Yaradılma Tarixi: {datetime.date.today().strftime('%d.%m.%Y')}\n")
+    output.write("-" * 41 + "\n\n")
 
-    # 2. Əgər şrift uğurla yüklənibsə, onu aktiv edirik
-    if os.path.exists(font_path):
-        pdf.add_font("DejaVu", "", font_path)
-        pdf.set_font("DejaVu", size=12)
+    # Süni intellektin yazdığı mətndən ulduzları təmizləyib fayla yazırıq
+    clean_text = plan_text.replace("**", "")
+    output.write(clean_text)
 
-        # Hərfləri təmiz UTF-8 formatına məcburi çeviririk (Xətanın qarşısını tam alır)
-        title_text = "CompassAI — Ekskluziv Seyahet Plani"
-        route_text = f"Marsrut: {route}"
-        budget_text = f"Umumi Budce: {budget}"
-        date_text = f"Yaradilma Tarixi: {datetime.date.today().strftime('%d.%m.%Y')}"
-    else:
-        # Əgər heç bir şrift işləməsə, ingilis hərfləri ilə standart rejimə keçir ki, PROQRAM ÇÖKMƏSİN
-        pdf.set_font("Helvetica", size=12)
-        title_text = "CompassAI - Ekskluziv Seyahet Plani"
-        route_text = f"Route: {route}"
-        budget_text = f"Budget: {budget}"
-        date_text = f"Date: {datetime.date.today().strftime('%d.%m.%Y')}"
-
-    # --- PDF-İ YIĞIRIQ ---
-
-    # 1. Başlıq
-    pdf.set_text_color(201, 162, 74)  # Lüks qızılı
-    pdf.cell(190, 10, txt=title_text, ln=True, align='C')
-    pdf.ln(10)
-
-    # 2. İnfo Panel
-    pdf.set_text_color(34, 34, 34)
-    pdf.cell(190, 8, txt=route_text, ln=True)
-    pdf.cell(190, 8, txt=budget_text, ln=True)
-    pdf.cell(190, 8, txt=date_text, ln=True)
-    pdf.ln(10)
-
-    # 3. Əsas Mətn (Mətndəki bütün xüsusi hərfləri qoruyaraq sətirbaoffset edirik)
-    for line in plan_text.split('\n'):
-        clean_line = line.replace("**", "").strip()
-        if not clean_line:
-            pdf.ln(4)
-            continue
-
-        if clean_line.startswith('#'):
-            pdf.set_text_color(201, 162, 74)
-            pdf.cell(190, 10, txt=clean_line.lstrip('#').strip(), ln=True)
-            pdf.set_text_color(34, 34, 34)
-        else:
-            # multi_cell-ə göndərməzdən əvvəl mətnin Unicode tipini sığortalayırıq
-            try:
-                pdf.multi_cell(0, 7, txt=clean_line)
-            except:
-                # Əgər hər hansı sətirdə simvol xətası olarsa, proqramı çökdürmür, simvolu təmizləyib yazır
-                safe_line = clean_line.encode('utf-8', 'ignore').decode('utf-8')
-                pdf.multi_cell(0, 7, txt=safe_line)
-
-    output = io.BytesIO()
-    pdf.output(output)
-    output.seek(0)
-    return output
+    # Faylı bayt formatına çeviririk ki, Streamlit yükləyə bilsin
+    binary_output = io.BytesIO(output.getvalue().encode('utf-8'))
+    return binary_output
 
 with st.sidebar:
     st.markdown("<h2 style='color:#c9a24a; margin-bottom:0;'>⚙️ Tənzimləmələr</h2>", unsafe_allow_html=True)
@@ -698,19 +647,18 @@ if st.session_state.get("generated_plan_text"):
     cities_joined = "-".join(leg["city"] for leg in st.session_state.legs)
     cities_joined = "-".join(leg["city"] for leg in st.session_state.legs)
 
-    # PDF generation
-    pdf_data = generate_luxury_pdf(
+    # Köhnə pdf_data çağıran hissəni bununla əvəz edin:
+    txt_data = generate_text_file(
         st.session_state["generated_plan_text"],
         st.session_state.get("route_summary_text", ""),
         f"{budget} {currency}"
     )
 
     st.download_button(
-        label="📥 Eksklüziv PDF Planı Yüklə",
-        data=pdf_data,
-        file_name=f"{cities_joined}_luxury_plan.pdf",
-        mime="application/pdf",
-        use_container_width=True
+        label="📄 Səyahət Planını Yüklə (.txt)",
+        data=txt_data,
+        file_name="safari_plani.txt",
+        mime="text/plain"
     )
 
 
