@@ -2,4 +2,4 @@ streamlit
 google-genai
 requests
 python-dotenv
-weasyprint
+fpdf2

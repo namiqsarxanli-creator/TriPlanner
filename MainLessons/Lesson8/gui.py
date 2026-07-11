@@ -8,7 +8,8 @@ from functools import wraps
 from urllib.parse import quote
 from dotenv import load_dotenv
 import io
-from weasyprint import HTML
+from fpdf import FPDF
+import urllib.request
 
 ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 load_dotenv(dotenv_path=ENV_PATH)
@@ -336,107 +337,47 @@ def seasonal_note(city_lower: str, travel_month: int):
 
 
 def generate_luxury_pdf(plan_text, route, budget):
-    # Markdown formatındakı başlıqları və ulduzcuqları HTML teqlərinə çeviririk
-    html_content = ""
+    pdf = FPDF()
+    pdf.add_page()
+
+    # Azərbaycan şriftini (Dejavu Sans) birbaşa vebdən yükləyirik ki, Linux-da kvadrat çıxmasın
+    font_url = "https://raw.githubusercontent.com/reingart/pyfpdf/master/fpdf/font/DejaVuSans.ttf"
+    font_path = "DejaVuSans.ttf"
+    try:
+        urllib.request.urlretrieve(font_url, font_path)
+        pdf.add_font("DejaVu", "", font_path, uni=True)
+        pdf.set_font("DejaVu", size=12)
+    except:
+        # Əgər internetdə problem olarsa, standart şriftə keçsin
+        pdf.set_font("Arial", size=12)
+
+    # Başlıq hissəsi
+    pdf.set_text_color(201, 162, 74)  # Lüks qızılı rəng
+    pdf.cell(200, 10, txt="CompassAI — Eksklüziv Səyahət Planı", ln=True, align='C')
+    pdf.ln(10)
+
+    # Məlumat paneli
+    pdf.set_text_color(34, 34, 34)
+    pdf.cell(200, 8, txt=f"Marşrut: {route}", ln=True)
+    pdf.cell(200, 8, txt=f"Ümumi Büdcə: {budget}", ln=True)
+    pdf.cell(200, 8, txt=f"Yaradılma Tarixi: {datetime.date.today().strftime('%d.%m.%Y')}", ln=True)
+    pdf.ln(10)
+
+    # Səyahət planının mətni
     for line in plan_text.split('\n'):
-        line = line.strip()
-        if not line:
-            html_content += "<br>"
-            continue
-
-        # **qalın** mətnləri <b> teqinə çeviririk
-        clean_line = ""
-        parts = line.split("**")
-        for idx, part in enumerate(parts):
-            if idx % 2 == 1:
-                clean_line += f"<b>{part}</b>"
-            else:
-                clean_line += part
-
-        # Başlıqları (#) tapırıq
-        if clean_line.startswith('#'):
-            header_text = clean_line.lstrip('#').strip()
-            html_content += f"<h2>{header_text}</h2>"
+        clean_line = line.replace("**", "")  # Ulduzları təmizləyirik
+        if clean_line.strip().startswith('#'):
+            pdf.set_text_color(201, 162, 74)
+            pdf.cell(200, 10, txt=clean_line.lstrip('#').strip(), ln=True)
+            pdf.set_text_color(34, 34, 34)
         else:
-            html_content += f"<p>{clean_line}</p>"
+            pdf.multi_cell(0, 8, txt=clean_line)
 
-    # Müasir və lüks dizaynlı HTML şablonu (Azərbaycan şriftləri üçün tam dəstəkli)
-    html_template = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="utf-8">
-        <style>
-            @page {{
-                size: A4;
-                margin: 20mm 15mm;
-                background-color: #ffffff;
-            }}
-            body {{
-                font-family: 'Segoe UI', Arial, sans-serif;
-                color: #222222;
-                line-height: 1.6;
-                font-size: 11pt;
-                margin: 0;
-                padding: 0;
-            }}
-            .title {{
-                color: #c9a24a;
-                text-align: center;
-                font-size: 24pt;
-                font-weight: bold;
-                margin-bottom: 5px;
-            }}
-            .meta-box {{
-                background-color: #fcf8ee;
-                border: 1.5px solid #c9a24a;
-                padding: 15px;
-                margin-top: 20px;
-                margin-bottom: 25px;
-                border-radius: 4px;
-            }}
-            .meta-box p {{
-                margin: 5px 0;
-                font-size: 11pt;
-            }}
-            h2 {{
-                color: #c9a24a;
-                font-size: 14pt;
-                border-left: 4px solid #c9a24a;
-                padding-left: 10px;
-                margin-top: 20px;
-                margin-bottom: 10px;
-            }}
-            p {{
-                margin: 0 0 8px 0;
-                text-align: justify;
-            }}
-            b {{
-                color: #111111;
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="title">CompassAI — Eksklüziv Səyahət Planı</div>
-
-        <div class="meta-box">
-            <p><b>Marşrut:</b> {route}</p>
-            <p><b>Ümumi Büdcə:</b> {budget}</p>
-            <p><b>Yaradılma Tarixi:</b> {datetime.date.today().strftime('%d.%m.%Y')}</p>
-        </div>
-
-        <div class="content">
-            {html_content}
-        </div>
-    </body>
-    </html>
-    """
-
-    # PDF generasiyası
-    buffer = io.BytesIO()
-    HTML(string=html_template).write_pdf(buffer)
-    buffer.seek(0)
-    return buffer
+    # PDF-i yaddaşa yazırıq
+    output = io.BytesIO()
+    pdf.output(output)
+    output.seek(0)
+    return output
 
 with st.sidebar:
     st.markdown("<h2 style='color:#c9a24a; margin-bottom:0;'>⚙️ Tənzimləmələr</h2>", unsafe_allow_html=True)
